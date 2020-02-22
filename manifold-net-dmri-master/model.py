@@ -12,8 +12,9 @@ class ManifoldNetSPD(nn.Module):
     def __init__(self):
         super(ManifoldNetSPD, self).__init__()
         #in_channel, out_channel, kernel_size, stride
-        self.spd_conv1 = spd.SPDConv2D(1, 4, 3, 1)
-        self.spd_conv2 = spd.SPDConv2D(4, 8, 3, 1)
+        self.spd_conv1 = spd.SPDConv2D(1, 4, 5, 2)
+        # ((total 64 - kern) / stride) + 1
+        self.spd_conv2 = spd.SPDConv2D(4, 8, 5, 2)
         self.spd_conv3 = spd.SPDConv2D(8, 16, 3, 1)
         self.spd_conv4 = spd.SPDConv2D(16, 16, 2, 1)
         self.spd_conv5 = spd.SPDConv2D(16, 8, 2, 1)
