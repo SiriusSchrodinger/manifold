@@ -11,28 +11,32 @@ from batch_svd import batch_svd
 class ManifoldNetSPD(nn.Module):
     def __init__(self):
         super(ManifoldNetSPD, self).__init__()
+        #in_channel, out_channel, kernel_size, stride
         self.spd_conv1 = spd.SPDConv2D(1, 4, 3, 1)
         self.spd_conv2 = spd.SPDConv2D(4, 8, 3, 1)
         self.spd_conv3 = spd.SPDConv2D(8, 16, 3, 1)
         self.spd_conv4 = spd.SPDConv2D(16, 16, 2, 1)
         self.spd_conv5 = spd.SPDConv2D(16, 8, 2, 1)
 
-        self.spd_fc = spd.SPDLinear()
-        self.fc1 = nn.Linear(288, 128)
-        self.fc2 = nn.Linear(128, 2)
         
     def forward(self, x):
-
+        print("zero")
+        print(x)
         x,wp1 = self.spd_conv1(x)
+        print("first")
+        print(x)
         x,wp2 = self.spd_conv2(x)
+        print("second")
+        print(x)
         x,wp3 = self.spd_conv3(x)
+        print("third")
+        print(x)
         x,wp3 = self.spd_conv4(x)
+        print("forth")
+        print(x)
         x,wp3 = self.spd_conv5(x)
-
-        x = self.spd_fc(x)
-
-        x = self.fc1(x)
-        x = self.fc2(x)
+        print("fifth")
+        print(x)
 
         return x
 
@@ -57,8 +61,7 @@ class ParkinsonsDataset(data.Dataset):
             samples.append(torch.matmul(v, torch.matmul(s, v.t())))
 
         sample_processed = torch.stack(samples)
-        print(sample_processed.shape)
-        sample_processed = sample_processed.reshape(1,26,10,3,3)
+        sample_processed = sample_processed.reshape(1,64,64,3,3)
 
         label = None
 
