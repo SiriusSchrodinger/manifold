@@ -39,7 +39,7 @@ class ManifoldNetSPD(nn.Module):
 class ParkinsonsDataset(data.Dataset):
   def __init__(self, data_tensorf):
         'Initialization'
-        self.all_data = np.load(data_tensorf)
+        self.all_data = np.load(data_tensorf)['arr_0']
         self.all_data = torch.from_numpy(self.all_data)
 
   def __len__(self):
