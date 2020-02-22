@@ -57,6 +57,7 @@ class ParkinsonsDataset(data.Dataset):
             samples.append(torch.matmul(v, torch.matmul(s, v.t())))
 
         sample_processed = torch.stack(samples)
+        print(sample_processed.shape)
         sample_processed = sample_processed.reshape(1,26,10,3,3)
 
         label = None
