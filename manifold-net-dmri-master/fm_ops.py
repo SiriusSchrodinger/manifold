@@ -31,7 +31,7 @@ def batchGLMean(M,N,w):
     
     M_sqrt = torch.matmul(u, torch.matmul(s_pow, v.permute(0,2,1)))
 
-    M_sqrt_inv = torch.inverse(M_sqrt)
+    M_sqrt_inv = b_inv33(M_sqrt)
 
     inner_term = torch.matmul(M_sqrt_inv, torch.matmul(N, M_sqrt_inv))
 
@@ -92,6 +92,83 @@ def recursiveFM2D(windows, weights):
     out = out.permute(0,3,1,2,4,5).contiguous()
     
     return out
+
+
+def b_inv33(b_mat):
+
+    #b_mat = b_mat.cpu()
+
+    #eye = b_mat.new_ones(b_mat.size(-1)).diag().expand_as(b_mat)
+
+    #b_inv, _ = torch.gesv(eye, b_mat)
+
+    #b_inv = b_inv.to(device)
+
+    #print(b_inv.contiguous())
+
+    #b = [t.inverse() for t in torch.unbind(b_mat)]
+
+    #b_inv = torch.stack(b)
+
+    b00 = b_mat[:,0,0]
+
+    b01 = b_mat[:,0,1]
+
+    b02 = b_mat[:,0,2]
+
+    b10 = b_mat[:,1,0]
+
+    b11 = b_mat[:,1,1]
+
+    b12 = b_mat[:,1,2]
+
+    b20 = b_mat[:,2,0]
+
+    b21 = b_mat[:,2,1]
+
+    b22 = b_mat[:,2,2]
+
+    det = (b00*(b11*b22-b12*b21)-b01*(b10*b22-b12*b20)+b02*(b10*b21-b11*b20))
+
+    c00 = b11*b22 - b12*b21
+
+    c01 = b02*b21 - b01*b22
+
+    c02 = b01*b12 - b02*b11
+
+    c10 = b12*b20 - b10*b22
+
+    c11 = b00*b22 - b02*b20
+
+    c12 = b02*b10 - b00*b12
+
+    c20 = b10*b21 - b11*b20
+
+    c21 = b01*b20 - b00*b21
+
+    c22 = b00*b11 - b01*b10
+
+    c00 = (c00/ (det+eps)).view(-1, 1, 1)
+
+    c01 = (c01/ (det+eps)).view(-1, 1, 1)
+
+    c02 = (c02/ (det+eps)).view(-1, 1, 1)
+
+    c10 = (c10/ (det+eps)).view(-1, 1, 1)
+
+    c11 = (c11/ (det+eps)).view(-1, 1, 1)
+
+    c12 = (c12/ (det+eps)).view(-1, 1, 1)
+
+    c20 = (c20/ (det+eps)).view(-1, 1, 1)
+
+    c21 = (c21/ (det+eps)).view(-1, 1, 1)
+
+    c22 = (c22/ (det+eps)).view(-1, 1, 1)
+
+    b_inv1 = torch.cat((torch.cat((c00,c01,c02), dim=2), torch.cat((c10,c11,c12), dim=2), torch.cat((c20,c21,c22), dim=2)), dim=1)
+
+    return b_inv1
 
 
 
