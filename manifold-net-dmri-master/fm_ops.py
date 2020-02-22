@@ -109,6 +109,7 @@ def b_inv33(b_mat):
     #b = [t.inverse() for t in torch.unbind(b_mat)]
 
     #b_inv = torch.stack(b)
+    eps = 0.0000001
 
     b00 = b_mat[:,0,0]
 
