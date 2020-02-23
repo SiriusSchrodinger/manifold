@@ -52,6 +52,7 @@ def batchGLMean(M,N,w):
     print(M.shape)
     print(N.shape)
     print(w.shape)
+    w = w.view((-1, 1, 1))
     return M * w #+ N * (1 - w)
 
 
