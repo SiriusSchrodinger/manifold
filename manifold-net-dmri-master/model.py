@@ -39,18 +39,18 @@ class ManifoldNetSPD(nn.Module):
         add_identity(x)
         x,wp3 = self.spd_conv5(x)
 
-        x = padding(x, 2)
+        #x = padding(x, 2)
         #print("six after padding")
         #print(x.shape)
-        x, wp4 = self.spd_conv6(x)
-        x = padding(x, 2)
-        x, wp4 = self.spd_conv7(x)
-        x = padding(x, 4)
-        x, wp4 = self.spd_conv8(x)
-        x = padding(x, 4)
-        x, wp5 = self.spd_conv9(x)
-        x = padding(x, 4)
-        x, wp6 = self.spd_conv10(x)
+        #x, wp4 = self.spd_conv6(x)
+        #x = padding(x, 2)
+        #x, wp4 = self.spd_conv7(x)
+        #x = padding(x, 4)
+        #x, wp4 = self.spd_conv8(x)
+        #x = padding(x, 4)
+        #x, wp5 = self.spd_conv9(x)
+        #x = padding(x, 4)
+        #x, wp6 = self.spd_conv10(x)
 
         return x
 
@@ -74,7 +74,7 @@ def add_identity(x):
         for p in range(x.shape[1]):
             for i in range(x.shape[2]):
                 for j in range(x.shape[3]):
-                    x[m][p][i][j] += torch.eye(3, device = device)
+                    x[m][p][i][j] = torch.add(x[m][p][i][j], torch.eye(3, device = device))
 
 
 class ParkinsonsDataset(data.Dataset):
