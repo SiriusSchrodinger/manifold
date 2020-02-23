@@ -30,7 +30,7 @@ class ManifoldNetSPD(nn.Module):
     def forward(self, x):
         #add_identity(x)
         x,wp1 = self.spd_conv1(x)
-        print(wp1)
+        #print(wp1)
         #add_identity(x)
         x,wp2 = self.spd_conv2(x)
         #print(wp2)
