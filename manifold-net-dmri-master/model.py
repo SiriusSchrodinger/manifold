@@ -65,7 +65,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def padding(x, padding_dim):
     result = torch.ones([x.shape[0], x.shape[1], x.shape[2] + padding_dim, x.shape[3] + padding_dim, 3, 3], device = device)
     #result = np.zeros((x.shape[0], x.shape[1], x.shape[2] + padding_dim, x.shape[3] + padding_dim, 3, 3))
-    identity = np.identity(3)
+    identity = torch.eye(3)
     for m in range(result.shape[0]):
         for p in range(result.shape[1]):
             for i in range(result.shape[2]):
