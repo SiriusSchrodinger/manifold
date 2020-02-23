@@ -35,7 +35,7 @@ class SPDConv2D(nn.Module):
         #        print(torch.eig(out[i]))
         ####
 
-       # x: [batches, channels, rows, cols, 3, 3] -> 
+        # x: [batches, channels, rows, cols, 3, 3] -> 
         #    [batches, channels, 3, 3, rows, cols]
         x = x.permute(0,1,4,5,2,3).contiguous()
 
