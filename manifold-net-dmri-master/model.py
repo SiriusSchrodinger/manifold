@@ -28,23 +28,16 @@ class ManifoldNetSPD(nn.Module):
 
         
     def forward(self, x):
-        #print("zero")
-        #print(x.shape)
-        x,wp1 = self.spd_conv1(x)      
-        #print("first")
-        #print(x.shape)
+        add_identity(x)
+        x,wp1 = self.spd_conv1(x)
+        add_identity(x)
         x,wp2 = self.spd_conv2(x)
-        #print("second")
-        #print(x.shape)
-        x,wp3 = self.spd_conv3(x)    
-        #print("third")
-        #print(x.shape)
+        add_identity(x)
+        x,wp3 = self.spd_conv3(x)
+        add_identity(x)
         x,wp3 = self.spd_conv4(x)
-        #print("forth")
-        #print(x.shape)
+        add_identity(x)
         x,wp3 = self.spd_conv5(x)
-        #print("fifth")
-        #print(x.shape)
 
         x = padding(x, 2)
         #print("six after padding")
@@ -64,18 +57,24 @@ class ManifoldNetSPD(nn.Module):
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def padding(x, padding_dim):
     result = torch.ones([x.shape[0], x.shape[1], x.shape[2] + padding_dim, x.shape[3] + padding_dim, 3, 3], device = device)
-    identity = torch.eye(3)
     for m in range(result.shape[0]):
         for p in range(result.shape[1]):
             for i in range(result.shape[2]):
                 for j in range(result.shape[3]):
                     if i < padding_dim or (result.shape[2] - i) <= padding_dim:
-                        result[m][p][i][j] = identity
+                        result[m][p][i][j] = torch.eye(3)
                     elif j < padding_dim or (result.shape[3] - j) <= padding_dim:
-                        result[m][p][i][j] = identity
+                        result[m][p][i][j] = torch.eye(3)
                     else:
                         result[m][p][i][j] = x[m][p][i - padding_dim][j - padding_dim]
     return result
+
+def add_identity(x):
+    for m in range(x.shape[0]):
+        for p in range(x.shape[1]):
+            for i in range(x.shape[2]):
+                for j in range(x.shape[3]):
+                    x[m][p][i][j] += torch.eye(3)
 
 
 class ParkinsonsDataset(data.Dataset):
