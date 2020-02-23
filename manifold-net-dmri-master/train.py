@@ -21,7 +21,7 @@ validation_params = {'batch_size': 71,
         'num_workers': 0}
 
 max_epochs = 150
-validate = True
+validate = False
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -57,17 +57,18 @@ with open("data_backup", "w") as f:
     try:
         for epoch in range(max_epochs):
             print('Starting Epoch ', epoch, '...')
-            for sample, label in training_generator:
+            #for sample, label in training_generator:
+            for sample in training_generator:
                 i += 1
                 sample = sample.to(device)
-                label = label.to(device)
+                #label = label.to(device)
                 
                 print("\n")
                 start = time.time()
                 optimizer_con.zero_grad()
                 out = manifold_net_con(sample)
-                print(out)
-                print(label)
+                #print(out)
+                #print(label)
                 #loss = criterion(out,label)
                 loss = my_loss(sample, out)
                 loss.backward()
@@ -75,23 +76,23 @@ with open("data_backup", "w") as f:
                 print("\n")
 
                 optimizer_con.step()
-                print('Training Loss: ', loss)
-                print('Classification accuracy: ', classification(out, label))
+                print('Training Loss: ', loss.item())
+                #print('Classification accuracy: ', classification(out, label))
                 print('Time: ', end-start)
 
                 f.write('Training Loss: '+str(loss)+"\n")
-                f.write('Classification accuracy: '+str(classification(out, label))+"\n")
+                #f.write('Classification accuracy: '+str(classification(out, label))+"\n")
                 f.flush()
 
                 writer.add_scalar("data/training_loss", loss, i)
 
             if validate:
                 print('Testing on validation set...')
-                for sample, label in validation_generator:
+                for sample in validation_generator:
                     sample = sample.to(device)
-                    label = label.to(device)
+                    #label = label.to(device)
                     out = manifold_net_con(sample)
-                    loss = criterion(out,label)
+                    #loss = criterion(out,label)
                     print("\n \n Epoch "+str(epoch)+" classification: ", classification(out, label))
                     print(loss)
                     writer.add_scalar("data/validation_loss", loss, epoch)

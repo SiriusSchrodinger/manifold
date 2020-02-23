@@ -28,27 +28,27 @@ class ManifoldNetSPD(nn.Module):
 
         
     def forward(self, x):
-        print("zero")
-        print(x.shape)
-        x,wp1 = self.spd_conv1(x)
-        print("first")
-        print(x.shape)
+        #print("zero")
+        #print(x.shape)
+        x,wp1 = self.spd_conv1(x)      
+        #print("first")
+        #print(x.shape)
         x,wp2 = self.spd_conv2(x)
-        print("second")
-        print(x.shape)
-        x,wp3 = self.spd_conv3(x)
-        print("third")
-        print(x.shape)
+        #print("second")
+        #print(x.shape)
+        x,wp3 = self.spd_conv3(x)    
+        #print("third")
+        #print(x.shape)
         x,wp3 = self.spd_conv4(x)
-        print("forth")
-        print(x.shape)
+        #print("forth")
+        #print(x.shape)
         x,wp3 = self.spd_conv5(x)
-        print("fifth")
-        print(x.shape)
+        #print("fifth")
+        #print(x.shape)
 
         x = padding(x, 2)
-        print("six after padding")
-        print(x.shape)
+        #print("six after padding")
+        #print(x.shape)
         x, wp4 = self.spd_conv6(x)
         x = padding(x, 2)
         x, wp4 = self.spd_conv7(x)
@@ -64,7 +64,6 @@ class ManifoldNetSPD(nn.Module):
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def padding(x, padding_dim):
     result = torch.ones([x.shape[0], x.shape[1], x.shape[2] + padding_dim, x.shape[3] + padding_dim, 3, 3], device = device)
-    #result = np.zeros((x.shape[0], x.shape[1], x.shape[2] + padding_dim, x.shape[3] + padding_dim, 3, 3))
     identity = torch.eye(3)
     for m in range(result.shape[0]):
         for p in range(result.shape[1]):
@@ -76,7 +75,6 @@ def padding(x, padding_dim):
                         result[m][p][i][j] = identity
                     else:
                         result[m][p][i][j] = x[m][p][i - padding_dim][j - padding_dim]
-    #result = torch.from_numpy(result).to(device)
     return result
 
 
@@ -103,13 +101,5 @@ class ParkinsonsDataset(data.Dataset):
         sample_processed = torch.stack(samples)
         sample_processed = sample_processed.reshape(1,64,64,3,3)[:,16:48,16:48,...]
 
-        label = None
-
-        #356
-        if index < 356:
-            label = 1
-        else:
-            label = 0
-
-        return sample_processed, label
+        return sample_processed
 
