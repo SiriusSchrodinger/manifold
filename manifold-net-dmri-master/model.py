@@ -12,34 +12,56 @@ class ManifoldNetSPD(nn.Module):
     def __init__(self):
         super(ManifoldNetSPD, self).__init__()
         #in_channel, out_channel, kernel_size, stride
-        self.spd_conv1 = spd.SPDConv2D(1, 4, 5, 2)
-        # output = ((total 64 - kern) / stride) + 1
-        self.spd_conv2 = spd.SPDConv2D(4, 8, 5, 2)
+        # output = ((total 32 - kern) / stride) + 1
+        self.spd_conv1 = spd.SPDConv2D(1, 4, 3, 1)
+        self.spd_conv2 = spd.SPDConv2D(4, 8, 3, 1)
         self.spd_conv3 = spd.SPDConv2D(8, 16, 3, 1)
         self.spd_conv4 = spd.SPDConv2D(16, 16, 2, 1)
         self.spd_conv5 = spd.SPDConv2D(16, 8, 2, 1)
 
         
+        self.spd_conv6 = spd.SPDConv2D(8, 16, 2, 1)
+        self.spd_conv7 = spd.SPDConv2D(16, 16, 2, 1)
+        self.spd_conv8 = spd.SPDConv2D(16, 8, 3, 1)
+        self.spd_conv9 = spd.SPDConv2D(8, 4, 3, 1)
+        self.spd_conv10 = spd.SPDConv2D(4, 1, 3, 1)
+
+        
     def forward(self, x):
-        print("zero")
-        print(x.shape)
         x,wp1 = self.spd_conv1(x)
-        print("first")
-        print(x.shape)
         x,wp2 = self.spd_conv2(x)
-        print("second")
-        print(x.shape)
         x,wp3 = self.spd_conv3(x)
-        print("third")
-        print(x.shape)
         x,wp3 = self.spd_conv4(x)
-        print("forth")
-        print(x.shape)
         x,wp3 = self.spd_conv5(x)
-        print("fifth")
-        print(x.shape)
+
+        x = padding(x, 2)
+        x, wp4 = self.spd_conv6(x)
+        x = padding(x, 2)
+        x, wp4 = self.spd_conv7(x)
+        x = padding(x, 4)
+        x, wp4 = self.spd_conv8(x)
+        x = padding(x, 4)
+        x, wp5 = self.spd_conv9(x)
+        x = padding(x, 4)
+        x, wp6 = self.spd_conv10(x)
 
         return x
+
+    def padding(x, padding_dim):
+        result = np.zeros((x.shape[0], x.shape[1] + padding_dim, x.shape[2] + padding_dim, 3, 3))
+        identity = np.identity(3)
+        for p in range(result.shape[0]):
+            for i in range(result.shape[1]):
+                for j in range(result.shape[2]):
+                    if i < padding_dim or (result.shape[0] - i) <= padding_dim:
+                        result[i][j] = identity
+                    elif j < padding_dim or (result.shape[1] - j) <= padding_dim:
+                        result[i][j] = identity
+                    else:
+                        result[i][j] = x[i - padding_dim][j - padding_dim]
+        result = torch.from_numpy(result).to(device)
+        return result
+
 
 class ParkinsonsDataset(data.Dataset):
   def __init__(self, data_tensorf):

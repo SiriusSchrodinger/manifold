@@ -43,6 +43,11 @@ def classification(out,desired):
     correct = (predicted == desired).sum().item()
     return correct/float(total)
 
+def my_loss(sample, out):
+    diff = sample - out
+    result = torch.norm(diff)
+    return result
+
 
 writer = SummaryWriter()
 i = 0
@@ -63,7 +68,8 @@ with open("data_backup", "w") as f:
                 out = manifold_net_con(sample)
                 print(out)
                 print(label)
-                loss = criterion(out,label)
+                #loss = criterion(out,label)
+                loss = my_loss(sample, out)
                 loss.backward()
                 end = time.time()
                 print("\n")
