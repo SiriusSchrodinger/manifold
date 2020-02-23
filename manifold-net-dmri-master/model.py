@@ -47,20 +47,20 @@ class ManifoldNetSPD(nn.Module):
 
         return x
 
-    def padding(x, padding_dim):
-        result = np.zeros((x.shape[0], x.shape[1] + padding_dim, x.shape[2] + padding_dim, 3, 3))
-        identity = np.identity(3)
-        for p in range(result.shape[0]):
-            for i in range(result.shape[1]):
-                for j in range(result.shape[2]):
-                    if i < padding_dim or (result.shape[0] - i) <= padding_dim:
-                        result[i][j] = identity
-                    elif j < padding_dim or (result.shape[1] - j) <= padding_dim:
-                        result[i][j] = identity
-                    else:
-                        result[i][j] = x[i - padding_dim][j - padding_dim]
-        result = torch.from_numpy(result).to(device)
-        return result
+def padding(x, padding_dim):
+    result = np.zeros((x.shape[0], x.shape[1] + padding_dim, x.shape[2] + padding_dim, 3, 3))
+    identity = np.identity(3)
+    for p in range(result.shape[0]):
+        for i in range(result.shape[1]):
+            for j in range(result.shape[2]):
+                if i < padding_dim or (result.shape[0] - i) <= padding_dim:
+                    result[i][j] = identity
+                elif j < padding_dim or (result.shape[1] - j) <= padding_dim:
+                    result[i][j] = identity
+                else:
+                    result[i][j] = x[i - padding_dim][j - padding_dim]
+    result = torch.from_numpy(result).to(device)
+    return result
 
 
 class ParkinsonsDataset(data.Dataset):
