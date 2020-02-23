@@ -29,6 +29,7 @@ class ManifoldNetSPD(nn.Module):
 
 
     def forward(self, x):
+        import pdb; pdb.set_trace()
         x,wp1 = self.spd_conv1(x)
         x,wp2 = self.spd_conv2(x)
         x,wp3 = self.spd_conv3(x)
