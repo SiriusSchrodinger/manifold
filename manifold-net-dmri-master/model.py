@@ -39,26 +39,26 @@ class ManifoldNetSPD(nn.Module):
         #add_identity(x)
         x,wp3 = self.spd_conv5(x)
 
-        x = padding(x, 2)
+        x = padding(x, 1)
         print("before")
         print(x)
         x, wp4 = self.spd_conv6(x)
         print("after")
         print(x)
-        #x = padding(x, 2)
+        #x = padding(x, 1)
         #x, wp4 = self.spd_conv7(x)
-        #x = padding(x, 4)
+        #x = padding(x, 2)
         #x, wp4 = self.spd_conv8(x)
-        #x = padding(x, 4)
+        #x = padding(x, 2)
         #x, wp5 = self.spd_conv9(x)
-        #x = padding(x, 4)
+        #x = padding(x, 2)
         #x, wp6 = self.spd_conv10(x)
 
         return x
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def padding(x, padding_dim):
-    result = torch.ones([x.shape[0], x.shape[1], x.shape[2] + padding_dim, x.shape[3] + padding_dim, 3, 3], device = device)
+    result = torch.ones([x.shape[0], x.shape[1], x.shape[2] + padding_dim * 2, x.shape[3] + padding_dim * 2, 3, 3], device = device)
     for m in range(result.shape[0]):
         for p in range(result.shape[1]):
             for i in range(result.shape[2]):
