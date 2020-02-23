@@ -67,6 +67,7 @@ with open("data_backup", "w") as f:
                 start = time.time()
                 optimizer_con.zero_grad()
                 out = manifold_net_con(sample)
+                print(out)
                 #print(out)
                 #print(label)
                 #loss = criterion(out,label)
