@@ -28,13 +28,27 @@ class ManifoldNetSPD(nn.Module):
 
         
     def forward(self, x):
+        print("zero")
+        print(x.shape)
         x,wp1 = self.spd_conv1(x)
+        print("first")
+        print(x.shape)
         x,wp2 = self.spd_conv2(x)
+        print("second")
+        print(x.shape)
         x,wp3 = self.spd_conv3(x)
+        print("third")
+        print(x.shape)
         x,wp3 = self.spd_conv4(x)
+        print("forth")
+        print(x.shape)
         x,wp3 = self.spd_conv5(x)
+        print("fifth")
+        print(x.shape)
 
         x = padding(x, 2)
+        print("six after padding")
+        print(x.shape)
         x, wp4 = self.spd_conv6(x)
         x = padding(x, 2)
         x, wp4 = self.spd_conv7(x)
