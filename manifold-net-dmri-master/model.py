@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils import data
 import spd
-import pdb 
+
 
 from batch_svd import batch_svd
 
@@ -29,20 +29,14 @@ class ManifoldNetSPD(nn.Module):
 
 
     def forward(self, x):
-        #add_identity(x)
-        pdb.set_trace()
         x,wp1 = self.spd_conv1(x)
         #print(wp1)
-        #add_identity(x)
         x,wp2 = self.spd_conv2(x)
         #print(wp2)
-        #add_identity(x)
         x,wp3 = self.spd_conv3(x)
         #print(wp3)
-        #add_identity(x)
         x,wp4 = self.spd_conv4(x)
         #print(wp4)
-        #add_identity(x)
         x,wp5 = self.spd_conv5(x)
         #print(wp5)
 
