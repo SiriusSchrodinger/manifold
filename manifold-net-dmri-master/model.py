@@ -20,11 +20,11 @@ class ManifoldNetSPD(nn.Module):
         self.spd_conv5 = spd.SPDConv2D(16, 8, 2, 1)
 
         
-        #self.spd_conv6 = spd.SPDConv2D(8, 16, 2, 1)
-        #self.spd_conv7 = spd.SPDConv2D(16, 16, 2, 1)
-        #self.spd_conv8 = spd.SPDConv2D(16, 8, 3, 1)
-        #self.spd_conv9 = spd.SPDConv2D(8, 4, 3, 1)
-        #self.spd_conv10 = spd.SPDConv2D(4, 1, 3, 1)
+        self.spd_conv6 = spd.SPDConv2D(8, 16, 2, 1)
+        self.spd_conv7 = spd.SPDConv2D(16, 16, 2, 1)
+        self.spd_conv8 = spd.SPDConv2D(16, 8, 3, 1)
+        self.spd_conv9 = spd.SPDConv2D(8, 4, 3, 1)
+        self.spd_conv10 = spd.SPDConv2D(4, 1, 3, 1)
 
         
     def forward(self, x):
@@ -42,15 +42,15 @@ class ManifoldNetSPD(nn.Module):
         #x = padding(x, 2)
         #print("six after padding")
         #print(x.shape)
-        #x, wp4 = self.spd_conv6(x)
+        x, wp4 = self.spd_conv6(x)
         #x = padding(x, 2)
-        #x, wp4 = self.spd_conv7(x)
+        x, wp4 = self.spd_conv7(x)
         #x = padding(x, 4)
-        #x, wp4 = self.spd_conv8(x)
+        x, wp4 = self.spd_conv8(x)
         #x = padding(x, 4)
-        #x, wp5 = self.spd_conv9(x)
+        x, wp5 = self.spd_conv9(x)
         #x = padding(x, 4)
-        #x, wp6 = self.spd_conv10(x)
+        x, wp6 = self.spd_conv10(x)
 
         return x
 
