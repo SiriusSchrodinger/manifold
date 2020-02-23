@@ -45,7 +45,7 @@ def classification(out,desired):
 
 def my_loss(sample, out):
     diff = sample - out
-    print(diff)
+    #print(diff)
     result = torch.norm(diff)
     return result
 
@@ -68,7 +68,7 @@ with open("data_backup", "w") as f:
                 start = time.time()
                 optimizer_con.zero_grad()
                 out = manifold_net_con(sample)
-                #print(out)
+                print(out)
                 #print(label)
                 #loss = criterion(out,label)
                 loss = my_loss(sample, out)
