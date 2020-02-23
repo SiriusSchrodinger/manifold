@@ -49,11 +49,8 @@ def batchGLMean(M,N,w):
 
 
     #return torch.matmul(M_sqrt, torch.matmul(inner_term_weighted, M_sqrt))
-    print(M.shape)
-    print(N.shape)
-    print(w.shape)
     w = w.view((-1, 1, 1))
-    return M * w #+ N * (1 - w)
+    return M * w + N * (1 - w)
 
 
 #windows: [batches, rows_reduced, cols_reduced, window, 3, 3]
