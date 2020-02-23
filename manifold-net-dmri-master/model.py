@@ -63,17 +63,18 @@ class ManifoldNetSPD(nn.Module):
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def padding(x, padding_dim):
-    result = np.zeros((x.shape[0], x.shape[1] + padding_dim, x.shape[2] + padding_dim, 3, 3))
+    result = np.zeros((x.shape[0], x.shape[1], x.shape[2] + padding_dim, x.shape[3] + padding_dim, 3, 3))
     identity = np.identity(3)
-    for p in range(result.shape[0]):
-        for i in range(result.shape[1]):
-            for j in range(result.shape[2]):
-                if i < padding_dim or (result.shape[0] - i) <= padding_dim:
-                    result[p][i][j] = identity
-                elif j < padding_dim or (result.shape[1] - j) <= padding_dim:
-                    result[p][i][j] = identity
-                else:
-                    result[p][i][j] = x[p][i - padding_dim][j - padding_dim]
+    for m in range(result.shape[0]):
+        for p in range(result.shape[1]):
+            for i in range(result.shape[2]):
+                for j in range(result.shape[3]):
+                    if i < padding_dim or (result.shape[2] - i) <= padding_dim:
+                        result[m][p][i][j] = identity
+                    elif j < padding_dim or (result.shape[3] - j) <= padding_dim:
+                        result[m][p][i][j] = identity
+                    else:
+                        result[m][p][i][j] = x[p][i - padding_dim][j - padding_dim]
     result = torch.from_numpy(result).to(device)
     return result
 
