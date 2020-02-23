@@ -45,10 +45,6 @@ def classification(out,desired):
 
 def my_loss(sample, out):
     diff = sample - out
-    print("sample")
-    print(sample)
-    print("out")
-    print(out)
     result = torch.norm(diff)
     return result
 
