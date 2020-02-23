@@ -40,19 +40,15 @@ class ManifoldNetSPD(nn.Module):
         x,wp3 = self.spd_conv5(x)
 
         x = padding(x, 1)
-        print("before")
-        print(x)
         x, wp4 = self.spd_conv6(x)
-        print("after")
-        print(x)
-        #x = padding(x, 1)
-        #x, wp4 = self.spd_conv7(x)
-        #x = padding(x, 2)
-        #x, wp4 = self.spd_conv8(x)
-        #x = padding(x, 2)
-        #x, wp5 = self.spd_conv9(x)
-        #x = padding(x, 2)
-        #x, wp6 = self.spd_conv10(x)
+        x = padding(x, 1)
+        x, wp4 = self.spd_conv7(x)
+        x = padding(x, 2)
+        x, wp4 = self.spd_conv8(x)
+        x = padding(x, 2)
+        x, wp5 = self.spd_conv9(x)
+        x = padding(x, 2)
+        x, wp6 = self.spd_conv10(x)
 
         return x
 
