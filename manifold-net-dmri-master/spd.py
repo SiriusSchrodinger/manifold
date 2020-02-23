@@ -24,7 +24,7 @@ class SPDConv2D(nn.Module):
         self.kern_size = kern_size
         self.stride = stride
         self.weight_matrix = torch.nn.Parameter(torch.rand(out_channels, (kern_size**2)*in_channels),requires_grad=True)
-        print(self.weight_matrix)
+        #print(self.weight_matrix)
 
     # x: [batches, channels, rows, cols, 3, 3]
     def forward(self, x):

@@ -70,6 +70,7 @@ with open("data_backup", "w") as f:
                 print("\n")
                 start = time.time()
                 optimizer_con.zero_grad()
+                pdb.set_trace()
                 out = manifold_net_con(sample)
                 #print(out)
                 #print(label)
