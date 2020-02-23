@@ -62,9 +62,9 @@ def padding(x, padding_dim):
             for i in range(result.shape[2]):
                 for j in range(result.shape[3]):
                     if i < padding_dim or (result.shape[2] - i) <= padding_dim:
-                        result[m][p][i][j] = torch.eye(3)
+                        result[m][p][i][j] = torch.eye(3, device = device)
                     elif j < padding_dim or (result.shape[3] - j) <= padding_dim:
-                        result[m][p][i][j] = torch.eye(3)
+                        result[m][p][i][j] = torch.eye(3, device = device)
                     else:
                         result[m][p][i][j] = x[m][p][i - padding_dim][j - padding_dim]
     return result
@@ -74,7 +74,7 @@ def add_identity(x):
         for p in range(x.shape[1]):
             for i in range(x.shape[2]):
                 for j in range(x.shape[3]):
-                    x[m][p][i][j] += torch.eye(3)
+                    x[m][p][i][j] += torch.eye(3, device = device)
 
 
 class ParkinsonsDataset(data.Dataset):
