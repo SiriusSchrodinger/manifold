@@ -39,17 +39,17 @@ class ManifoldNetSPD(nn.Module):
         #add_identity(x)
         x,wp3 = self.spd_conv5(x)
 
-        #x = padding(x, 2)
+        x = padding(x, 2)
         #print("six after padding")
         #print(x.shape)
         x, wp4 = self.spd_conv6(x)
-        #x = padding(x, 2)
+        x = padding(x, 2)
         x, wp4 = self.spd_conv7(x)
-        #x = padding(x, 4)
+        x = padding(x, 4)
         x, wp4 = self.spd_conv8(x)
-        #x = padding(x, 4)
+        x = padding(x, 4)
         x, wp5 = self.spd_conv9(x)
-        #x = padding(x, 4)
+        x = padding(x, 4)
         x, wp6 = self.spd_conv10(x)
 
         return x
