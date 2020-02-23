@@ -24,31 +24,32 @@ def mexp(x, exp):
 def batchGLMean(M,N,w):
     
     # w:[-1, 3, 3]
-    w = w.unsqueeze(1).repeat(1,M.shape[-1])
+    #w = w.unsqueeze(1).repeat(1,M.shape[-1])
 
-    u,s,v = batch_svd(M)
-    s_pow = torch.diag_embed(torch.pow(s,0.5))
+    #u,s,v = batch_svd(M)
+    #s_pow = torch.diag_embed(torch.pow(s,0.5))
     
-    M_sqrt = torch.matmul(u, torch.matmul(s_pow, v.permute(0,2,1)))
+    #M_sqrt = torch.matmul(u, torch.matmul(s_pow, v.permute(0,2,1)))
 
-    M_sqrt_inv = b_inv33(M_sqrt)
+    #M_sqrt_inv = b_inv33(M_sqrt)
 
-    inner_term = torch.matmul(M_sqrt_inv, torch.matmul(N, M_sqrt_inv))
+    #inner_term = torch.matmul(M_sqrt_inv, torch.matmul(N, M_sqrt_inv))
 
     
-    u_i, s_i, v_i = batch_svd(inner_term)
+    #u_i, s_i, v_i = batch_svd(inner_term)
 
 
-    s_i_c = s_i.view(-1)
-    s_i_c_pow = s_i_c**(w.view(-1))
-    s_i_pow = s_i_c_pow.view(*s.shape)
+    #s_i_c = s_i.view(-1)
+    #s_i_c_pow = s_i_c**(w.view(-1))
+    #s_i_pow = s_i_c_pow.view(*s.shape)
 
-    s_i_pow = torch.diag_embed(s_i_pow)
+    #s_i_pow = torch.diag_embed(s_i_pow)
 
-    inner_term_weighted = torch.matmul(u_i, torch.matmul(s_i_pow, v_i.permute(0,2,1)))
+    #inner_term_weighted = torch.matmul(u_i, torch.matmul(s_i_pow, v_i.permute(0,2,1)))
 
 
-    return torch.matmul(M_sqrt, torch.matmul(inner_term_weighted, M_sqrt))
+    #return torch.matmul(M_sqrt, torch.matmul(inner_term_weighted, M_sqrt))
+    return M * w + N * (1 - w)
 
 
 #windows: [batches, rows_reduced, cols_reduced, window, 3, 3]
