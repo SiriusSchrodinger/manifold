@@ -54,11 +54,11 @@ def padding(x, padding_dim):
         for i in range(result.shape[1]):
             for j in range(result.shape[2]):
                 if i < padding_dim or (result.shape[0] - i) <= padding_dim:
-                    result[i][j] = identity
+                    result[p][i][j] = identity
                 elif j < padding_dim or (result.shape[1] - j) <= padding_dim:
-                    result[i][j] = identity
+                    result[p][i][j] = identity
                 else:
-                    result[i][j] = x[i - padding_dim][j - padding_dim]
+                    result[p][i][j] = x[p][i - padding_dim][j - padding_dim]
     result = torch.from_numpy(result).to(device)
     return result
 
