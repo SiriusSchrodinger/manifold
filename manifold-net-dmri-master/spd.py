@@ -33,7 +33,7 @@ class CayleyConv(nn.Module):
                         up = torch.triu(temp[i][j][m][p])
                         low = up.t()
                         x[i][j][m][p] = up - low
-        result.torch.ones([self.out_channels, self.in_channels, 3, 3, 3, 3])
+        result = torch.ones([self.out_channels, self.in_channels, 3, 3, 3, 3])
         for i in range(x.shape[0]):
             for j in range(x.shape[1]):
                 for m in range(3):
