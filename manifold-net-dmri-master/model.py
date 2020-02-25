@@ -17,34 +17,29 @@ class ManifoldNetSPD(nn.Module):
         self.spd_conv1 = spd.SPDConv2D(1, 4, 3, 1)
         self.spd_conv2 = spd.SPDConv2D(4, 8, 3, 1)
         self.spd_conv3 = spd.SPDConv2D(8, 16, 3, 1)
-        self.spd_conv4 = spd.SPDConv2D(16, 16, 2, 1)
-        self.spd_conv5 = spd.SPDConv2D(16, 8, 2, 1)
+        self.spd_conv4 = spd.SPDConv2D(16, 16, 3, 1)
+        self.spd_conv5 = spd.SPDConv2D(16, 8, 3, 1)
 
 
-        self.spd_conv6 = spd.SPDConv2D(8, 16, 2, 1)
-        self.spd_conv7 = spd.SPDConv2D(16, 16, 2, 1)
-        self.spd_conv8 = spd.SPDConv2D(16, 8, 3, 1)
-        self.spd_conv9 = spd.SPDConv2D(8, 4, 3, 1)
-        self.spd_conv10 = spd.SPDConv2D(4, 1, 3, 1)
+        self.spd_conv6 = spd.CayleyConv(8, 16, 3, 1)
+        self.spd_conv7 = spd.CayleyConv(16, 16, 3, 1)
+        self.spd_conv8 = spd.CayleyConv(16, 8, 3, 1)
+        self.spd_conv9 = spd.CayleyConv(8, 4, 3, 1)
+        self.spd_conv10 = spd.CayleyConv(4, 1, 3, 1)
 
 
     def forward(self, x):
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         x,wp1 = self.spd_conv1(x)
         x,wp2 = self.spd_conv2(x)
         x,wp3 = self.spd_conv3(x)
         x,wp4 = self.spd_conv4(x)
         x,wp5 = self.spd_conv5(x)
 
-        x = padding(x, 1)
         x, wp6 = self.spd_conv6(x)
-        x = padding(x, 1)
         x, wp7 = self.spd_conv7(x)
-        x = padding(x, 2)
         x, wp8 = self.spd_conv8(x)
-        x = padding(x, 2)
         x, wp9 = self.spd_conv9(x)
-        x = padding(x, 2)
         x, wp10 = self.spd_conv10(x)
 
         return x

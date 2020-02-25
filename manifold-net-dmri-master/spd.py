@@ -14,6 +14,82 @@ def weightNormalize(weights):
          out.append(torch.clamp(row, min=0.001, max=0.999))
     return torch.stack(out).view(*weights.shape)
 
+class CayleyConv(nn.Module):
+    def __init__(self, in_channels, out_channels, kern_size, stride):
+        super(SPDConv2D, self).__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kern_size = kern_size
+        self.stride = stride
+        self.g = torch.nn.Parameter(self.create_weight(),requires_grad=True)
+
+    def create_weight(self):
+        x = torch.ones([self.out_channels, self.in_channels, 3, 3, 3, 3])
+        temp = torch.rand(self.out_channels, self.in_channels, 3, 3, 3, 3)
+        for i in range(x.shape[0]):
+            for j in range(x.shape[1]):
+                for m in range(3):
+                    for p in range(3):
+                        up = torch.triu(temp[i])
+                        low = up.t()
+                        x[i][j][m][p] = up - low
+        result.torch.ones([self.out_channels, self.in_channels, 3, 3, 3, 3])
+        for i in range(x.shape[0]):
+            for j in range(x.shape[1]):
+                for m in range(3):
+                    for p in range(3):
+                        result[i][j][m][p] = torch.mm((torch.eye(3) + x[i][j][m][p]), self.inverse3(torch.eye(3) - x[i][j][m][p]))
+        return result
+
+    def inverse3(b_mat):
+        eps = 0.0000001
+        b00 = b_mat[:,0,0]
+        b01 = b_mat[:,0,1]
+        b02 = b_mat[:,0,2]
+        b10 = b_mat[:,1,0]
+        b11 = b_mat[:,1,1]
+        b12 = b_mat[:,1,2]
+        b20 = b_mat[:,2,0]
+        b21 = b_mat[:,2,1]
+        b22 = b_mat[:,2,2]
+        det = (b00*(b11*b22-b12*b21)-b01*(b10*b22-b12*b20)+b02*(b10*b21-b11*b20))
+        c00 = b11*b22 - b12*b21
+        c01 = b02*b21 - b01*b22
+        c02 = b01*b12 - b02*b11
+        c10 = b12*b20 - b10*b22
+        c11 = b00*b22 - b02*b20
+        c12 = b02*b10 - b00*b12
+        c20 = b10*b21 - b11*b20
+        c21 = b01*b20 - b00*b21
+        c22 = b00*b11 - b01*b10
+        c00 = (c00/ (det+eps)).view(-1, 1, 1)
+        c01 = (c01/ (det+eps)).view(-1, 1, 1)
+        c02 = (c02/ (det+eps)).view(-1, 1, 1)
+        c10 = (c10/ (det+eps)).view(-1, 1, 1)
+        c11 = (c11/ (det+eps)).view(-1, 1, 1)
+        c12 = (c12/ (det+eps)).view(-1, 1, 1)
+        c20 = (c20/ (det+eps)).view(-1, 1, 1)
+        c21 = (c21/ (det+eps)).view(-1, 1, 1)
+        c22 = (c22/ (det+eps)).view(-1, 1, 1)
+        b_inv1 = torch.cat((torch.cat((c00,c01,c02), dim=2), torch.cat((c10,c11,c12), dim=2), torch.cat((c20,c21,c22), dim=2)), dim=1)
+        return b_inv1        
+
+    def forward(self, x):
+        # x = [batch, in, row, col, 3, 3]
+        # g = [out, in, 3, 3, 3, 3]
+        #assume stride = 1
+        #assume ker = 3
+        result = torch.zeros([x.shape[0], self.out_channels, x.shape[2] - 1 + self.kern_size, x.shape[3] - 1 + self.kern_size, 3, 3])
+        for m in range(result.shape[0]):
+            for o in range(self.out_channels):
+                for i in range(self.in_channels):
+                    for r in range(x.shape[2]):
+                        for c in range(x.shape[3]):
+                            #center = [r + 1][c + 1]
+                            for a in range(3):
+                                for b in range(3):
+                                    result[m][o][r + a][c + b] += torch.mm(torch.mm(self.g[o][i][0 + a][0 + b], x[m][i][r][c]), self.g[o][i][0 + a][0 + b].t())
+        return result
 
 
 class SPDConv2D(nn.Module):
