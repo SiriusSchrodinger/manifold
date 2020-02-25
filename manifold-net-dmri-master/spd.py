@@ -38,7 +38,7 @@ class CayleyConv(nn.Module):
             for j in range(x.shape[1]):
                 for m in range(3):
                     for p in range(3):
-                        result[i][j][m][p] = torch.mm((torch.eye(3) + x[i][j][m][p]), self.inverse3(torch.eye(3) - x[i][j][m][p]))
+                        result[i][j][m][p] = torch.mm((torch.eye(3) + x[i][j][m][p]), self.inverse3(torch.sub(torch.eye(3), x[i][j][m][p])))
         return result
 
     def inverse3(b_mat):
