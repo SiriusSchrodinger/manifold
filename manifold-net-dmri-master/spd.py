@@ -16,7 +16,7 @@ def weightNormalize(weights):
 
 class CayleyConv(nn.Module):
     def __init__(self, in_channels, out_channels, kern_size, stride):
-        super(SPDConv2D, self).__init__()
+        super(CayleyConv, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kern_size = kern_size
