@@ -91,6 +91,7 @@ class CayleyConv(nn.Module):
                             for a in range(3):
                                 for b in range(3):
                                     result[m][o][r + a][c + b] += torch.mm(torch.mm(self.g[o][i][0 + a][0 + b], x[m][i][r][c]), self.g[o][i][0 + a][0 + b].t())
+                            result[m][o][r + 1][c + 1] = x[m][i][r][c]
         return result, 0
 
 

@@ -12,7 +12,7 @@ def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
-training_params = {'batch_size': 1,
+training_params = {'batch_size': 5,
           'shuffle': True,
           'num_workers': 0}
 
