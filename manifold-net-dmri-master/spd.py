@@ -90,7 +90,8 @@ class CayleyConv(nn.Module):
                 for k in range(x_matrix.shape[2]):
                     for l in range(x_matrix.shape[3]):
                         if k == 1 and l == 1:
-                            x_matrix = torch.eye(3)
+                            x_matrix[i][j][k][l] = torch.eye(3)
+                            identitys[i][j][k][l] = torch.eye(3)
                         else:
                             num = k * 3 + l
                             if num == 8:
