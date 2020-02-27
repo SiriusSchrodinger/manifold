@@ -95,7 +95,7 @@ class CayleyConv(nn.Module):
                         else:
                             num = k * 3 + l
                             if num == 8:
-                                num == 4
+                                num = 4
                             _a = self.g[i][j][num][0]
                             _b = self.g[i][j][num][1]
                             _c = self.g[i][j][num][2]
