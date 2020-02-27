@@ -113,7 +113,7 @@ class CayleyConv(nn.Module):
                         identitys[i][j][k][l][2][2] = 1
 
         inverse_prep = self.inverse3(identitys.view([self.out_channels * self.in_channels * 3 * 3, 3, 3]))
-        inversed = inverse_prep.view(self.out_channels, self.in_channels, 3, 3, 3, 3)
+        inversed = inverse_prep.view(self.out_channels, self.in_channels, 3, 3, 3, 3).cuda()
         for m in range(result.shape[0]):
             for o in range(self.out_channels):
                 for i in range(self.in_channels):
