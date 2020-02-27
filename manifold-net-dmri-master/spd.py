@@ -91,9 +91,9 @@ class CayleyConv(nn.Module):
                             #center = [r + 1][c + 1]
                             for a in range(3):
                                 for b in range(3):
-                                    _a = g[o][i][a][b][0]
-                                    _b = g[o][i][a][b][1]
-                                    _c = g[o][i][a][b][2]
+                                    _a = self.g[o][i][a][b][0]
+                                    _b = self.g[o][i][a][b][1]
+                                    _c = self.g[o][i][a][b][2]
                                     g_matrix = torch.tensor([[0, _a, _b], [-_a, 0, _c], [-_b, -_c, 0]]).cuda()
                                     result[m][o][r + a][c + b] += torch.mm(torch.mm(g_matrix, x[m][i][r][c]), g_matrix.t())
                             result[m][o][r + 1][c + 1] = x[m][i][r][c]
