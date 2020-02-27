@@ -83,8 +83,8 @@ class CayleyConv(nn.Module):
         #assume stride = 1
         #assume ker = 3
         result = torch.zeros([x.shape[0], self.out_channels, x.shape[2] - 1 + self.kern_size, x.shape[3] - 1 + self.kern_size, 3, 3]).cuda()
-        x_matrix = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
-        identitys = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
+        x_matrix = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3])
+        identitys = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3])
         for i in range(x_matrix.shape[0]):
             for j in range(x_matrix.shape[1]):
                 for k in range(x_matrix.shape[2]):
@@ -121,7 +121,7 @@ class CayleyConv(nn.Module):
                             #center = [r + 1][c + 1]
                             for a in range(3):
                                 for b in range(3):
-                                    g_matrix = torch.mm(inversed, (torch.eye(3) + x_matrix))
+                                    g_matrix = torch.mm(inversed, (torch.eye(3) + x_matrix)).cuda()
                                     result[m][o][r + a][c + b] += torch.mm(torch.mm(g_matrix, x[m][i][r][c]), g_matrix.t())
                             result[m][o][r + 1][c + 1] = x[m][i][r][c]
         return result, 0
