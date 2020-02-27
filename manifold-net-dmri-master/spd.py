@@ -95,9 +95,9 @@ class CayleyConv(nn.Module):
                                     _b = self.g[o][i][a][b][1]
                                     _c = self.g[o][i][a][b][2]
                                     x_matrix = torch.tensor([[0, _a, _b], [-_a, 0, _c], [-_b, -_c, 0]]).cuda()
-                                    inverse_prep = torch.sub(torch.eye(3), x_matrix).view(1, 3, 3)
+                                    inverse_prep = torch.sub(torch.eye(3), x_matrix).view(1, 3, 3).cuda()
                                     inversed = self.inverse3(inverse_prep)
-                                    g_matrix = torch.mm(inversed[0], (torch.eye(3) + x_matrix))
+                                    g_matrix = torch.mm(inversed[0], (torch.eye(3) + x_matrix)).cuda()
                                     result[m][o][r + a][c + b] += torch.mm(torch.mm(g_matrix, x[m][i][r][c]), g_matrix.t())
                             result[m][o][r + 1][c + 1] = x[m][i][r][c]
         return result, 0
