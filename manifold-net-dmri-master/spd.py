@@ -122,6 +122,8 @@ class CayleyConv(nn.Module):
                             for a in range(3):
                                 for b in range(3):
                                     print(inversed)
+                                    print(torch.eye(3))
+                                    print(x_matrix)
                                     print(torch.eye(3) + x_matrix)
                                     torch.mm(inversed, (torch.eye(3) + x_matrix))
                                     g_matrix = 1
