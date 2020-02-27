@@ -121,7 +121,7 @@ class CayleyConv(nn.Module):
                             #center = [r + 1][c + 1]
                             for a in range(3):
                                 for b in range(3):
-                                    g_matrix = torch.mm(inversed, (torch.eye(3) + x_matrix)).cuda()
+                                    g_matrix = torch.mm(inversed, (torch.eye(3) + x_matrix))
                                     result[m][o][r + a][c + b] += torch.mm(torch.mm(g_matrix, x[m][i][r][c]), g_matrix.t())
                             result[m][o][r + 1][c + 1] = x[m][i][r][c]
         return result, 0
