@@ -24,8 +24,9 @@ class CayleyConv(nn.Module):
         self.g = torch.nn.Parameter(self.create_weight(),requires_grad=True)
 
     def create_weight(self):
-        x = torch.ones([self.out_channels, self.in_channels, 3, 3, 3, 3])
-        temp = torch.rand(self.out_channels, self.in_channels, 3, 3, 3, 3)
+        x = torch.rand([self.out_channels, self.in_channels, 3, 3, 3])
+        return x
+        """temp = torch.rand(self.out_channels, self.in_channels, 3, 3, 3)
         for i in range(x.shape[0]):
             for j in range(x.shape[1]):
                 for m in range(3):
@@ -41,7 +42,7 @@ class CayleyConv(nn.Module):
                     inversed = self.inverse3(inverse_prep)
                     for p in range(3):
                         result[i][j][m][p] = torch.mm((torch.eye(3) + x[i][j][m][p]), inversed[p])
-        return result
+        return result"""
 
     def inverse3(self, b_mat):
         eps = 0.0000001
@@ -78,7 +79,7 @@ class CayleyConv(nn.Module):
 
     def forward(self, x):
         # x = [batch, in, row, col, 3, 3]
-        # g = [out, in, 3, 3, 3, 3]
+        # g = [out, in, 3, 3, 3]
         #assume stride = 1
         #assume ker = 3
         result = torch.zeros([x.shape[0], self.out_channels, x.shape[2] - 1 + self.kern_size, x.shape[3] - 1 + self.kern_size, 3, 3]).cuda()
@@ -90,7 +91,11 @@ class CayleyConv(nn.Module):
                             #center = [r + 1][c + 1]
                             for a in range(3):
                                 for b in range(3):
-                                    result[m][o][r + a][c + b] += torch.mm(torch.mm(self.g[o][i][0 + a][0 + b], x[m][i][r][c]), self.g[o][i][0 + a][0 + b].t())
+                                    _a = g[o][i][a][b][0]
+                                    _b = g[o][i][a][b][1]
+                                    _c = g[o][i][a][b][2]
+                                    g_matrix = torch.tensor([[0, _a, _b], [-_a, 0, _c], [-_b, -_c, 0]]).cuda()
+                                    result[m][o][r + a][c + b] += torch.mm(torch.mm(g_matrix, x[m][i][r][c]), g_matrix.t())
                             result[m][o][r + 1][c + 1] = x[m][i][r][c]
         return result, 0
 
