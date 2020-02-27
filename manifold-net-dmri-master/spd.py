@@ -112,7 +112,8 @@ class CayleyConv(nn.Module):
                         identitys[i][j][k][l][2][1] = _c
                         identitys[i][j][k][l][2][2] = 1
 
-        inversed = self.inverse3(identitys.view([self.out_channels * self.in_channels * 3 * 3, 3, 3])).cuda()
+        inverse_prep = self.inverse3(identitys.view([self.out_channels * self.in_channels * 3 * 3, 3, 3]))
+        inversed = inverse_prep.view(self.out_channels, self.in_channels, 3, 3, 3, 3)
         for m in range(result.shape[0]):
             for o in range(self.out_channels):
                 for i in range(self.in_channels):
@@ -121,7 +122,7 @@ class CayleyConv(nn.Module):
                             #center = [r + 1][c + 1]
                             for a in range(3):
                                 for b in range(3):
-                                    g_matrix = torch.mm(inversed, (torch.eye(3).cuda() + x_matrix))
+                                    g_matrix = torch.mm(inversed[o][i][a][b], (torch.eye(3).cuda() + x_matrix[o][i][a][b]))
                                     result[m][o][r + a][c + b] += torch.mm(torch.mm(g_matrix, x[m][i][r][c]), g_matrix.t())
                             result[m][o][r + 1][c + 1] = x[m][i][r][c]
         return result, 0
