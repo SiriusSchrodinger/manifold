@@ -83,7 +83,7 @@ class CayleyConv(nn.Module):
         #assume stride = 1
         #assume ker = 3
         result = torch.zeros([x.shape[0], self.out_channels, x.shape[2] - 1 + self.kern_size, x.shape[3] - 1 + self.kern_size, 3, 3]).cuda()
-        x_matrix = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3])
+        x_matrix = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
         identitys = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3])
         for i in range(x_matrix.shape[0]):
             for j in range(x_matrix.shape[1]):
