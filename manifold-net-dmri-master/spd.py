@@ -24,7 +24,7 @@ class CayleyConv(nn.Module):
         self.g = torch.nn.Parameter(self.create_weight(),requires_grad=True)
 
     def create_weight(self):
-        x = torch.rand([self.out_channels, self.in_channels, 3, 3, 3])
+        x = torch.rand([self.out_channels, self.in_channels, 8, 3])
         return x
         """temp = torch.rand(self.out_channels, self.in_channels, 3, 3, 3)
         for i in range(x.shape[0]):
@@ -79,7 +79,7 @@ class CayleyConv(nn.Module):
 
     def forward(self, x):
         # x = [batch, in, row, col, 3, 3]
-        # g = [out, in, 3, 3, 3]
+        # g = [out, in, 8, 3]
         #assume stride = 1
         #assume ker = 3
         result = torch.zeros([x.shape[0], self.out_channels, x.shape[2] - 1 + self.kern_size, x.shape[3] - 1 + self.kern_size, 3, 3]).cuda()
@@ -89,28 +89,34 @@ class CayleyConv(nn.Module):
             for j in range(x_matrix.shape[1]):
                 for k in range(x_matrix.shape[2]):
                     for l in range(x_matrix.shape[3]):
-                        _a = self.g[i][j][k][l][0]
-                        _b = self.g[i][j][k][l][1]
-                        _c = self.g[i][j][k][l][2]
-                        x_matrix[i][j][k][l][0][0] = 0
-                        x_matrix[i][j][k][l][0][1] = _a
-                        x_matrix[i][j][k][l][0][2] = _b
-                        x_matrix[i][j][k][l][1][0] = -_a
-                        x_matrix[i][j][k][l][1][1] = 0
-                        x_matrix[i][j][k][l][1][2] = _c
-                        x_matrix[i][j][k][l][2][0] = -_b
-                        x_matrix[i][j][k][l][2][1] = -_c
-                        x_matrix[i][j][k][l][2][2] = 0
+                        if k == 1 and l == 1:
+                            x_matrix = torch.eye(3)
+                        else:
+                            num = k * 3 + l
+                            if num == 8:
+                                num == 4
+                            _a = self.g[i][j][num][0]
+                            _b = self.g[i][j][num][1]
+                            _c = self.g[i][j][num][2]
+                            x_matrix[i][j][k][l][0][0] = 0
+                            x_matrix[i][j][k][l][0][1] = _a
+                            x_matrix[i][j][k][l][0][2] = _b
+                            x_matrix[i][j][k][l][1][0] = -_a
+                            x_matrix[i][j][k][l][1][1] = 0
+                            x_matrix[i][j][k][l][1][2] = _c
+                            x_matrix[i][j][k][l][2][0] = -_b
+                            x_matrix[i][j][k][l][2][1] = -_c
+                            x_matrix[i][j][k][l][2][2] = 0
 
-                        identitys[i][j][k][l][0][0] = 1
-                        identitys[i][j][k][l][0][1] = -_a
-                        identitys[i][j][k][l][0][2] = -_b
-                        identitys[i][j][k][l][1][0] = _a
-                        identitys[i][j][k][l][1][1] = 1
-                        identitys[i][j][k][l][1][2] = -_c
-                        identitys[i][j][k][l][2][0] = _b
-                        identitys[i][j][k][l][2][1] = _c
-                        identitys[i][j][k][l][2][2] = 1
+                            identitys[i][j][k][l][0][0] = 1
+                            identitys[i][j][k][l][0][1] = -_a
+                            identitys[i][j][k][l][0][2] = -_b
+                            identitys[i][j][k][l][1][0] = _a
+                            identitys[i][j][k][l][1][1] = 1
+                            identitys[i][j][k][l][1][2] = -_c
+                            identitys[i][j][k][l][2][0] = _b
+                            identitys[i][j][k][l][2][1] = _c
+                            identitys[i][j][k][l][2][2] = 1
 
         inverse_prep = self.inverse3(identitys.view([self.out_channels * self.in_channels * 3 * 3, 3, 3]))
         inversed = inverse_prep.view(self.out_channels, self.in_channels, 3, 3, 3, 3).cuda()
