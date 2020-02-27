@@ -85,10 +85,10 @@ class CayleyConv(nn.Module):
         result = torch.zeros([x.shape[0], self.out_channels, x.shape[2] - 1 + self.kern_size, x.shape[3] - 1 + self.kern_size, 3, 3]).cuda()
         x_matrix = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
         identitys = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
-        for i in range(x_matrix[0]):
-            for j in range(x_matrix[1]):
-                for k in range(x_matrix[2]):
-                    for l in range(x_matrix[3]):
+        for i in range(x_matrix.shape[0]):
+            for j in range(x_matrix.shape[1]):
+                for k in range(x_matrix.shape[2]):
+                    for l in range(x_matrix.shape[3]):
                         _a = self.g[i][j][k][l][0]
                         _b = self.g[i][j][k][l][1]
                         _c = self.g[i][j][k][l][2]
