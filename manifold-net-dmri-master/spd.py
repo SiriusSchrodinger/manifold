@@ -24,25 +24,8 @@ class CayleyConv(nn.Module):
         self.g = torch.nn.Parameter(self.create_weight(),requires_grad=True)
 
     def create_weight(self):
-        x = torch.rand([self.out_channels, self.in_channels, 8, 3])
+        x = (torch.rand([self.out_channels, self.in_channels, 8, 3]) - 0.5) * 0.1
         return x
-        """temp = torch.rand(self.out_channels, self.in_channels, 3, 3, 3)
-        for i in range(x.shape[0]):
-            for j in range(x.shape[1]):
-                for m in range(3):
-                    for p in range(3):
-                        up = torch.triu(temp[i][j][m][p])
-                        low = up.t()
-                        x[i][j][m][p] = up - low
-        result = torch.ones([self.out_channels, self.in_channels, 3, 3, 3, 3])
-        for i in range(x.shape[0]):
-            for j in range(x.shape[1]):
-                for m in range(3):
-                    inverse_prep = torch.sub(torch.eye(3), x[i][j][m])
-                    inversed = self.inverse3(inverse_prep)
-                    for p in range(3):
-                        result[i][j][m][p] = torch.mm((torch.eye(3) + x[i][j][m][p]), inversed[p])
-        return result"""
 
     def inverse3(self, b_mat):
         eps = 0.0000001
