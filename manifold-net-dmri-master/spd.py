@@ -21,11 +21,7 @@ class CayleyConv(nn.Module):
         self.out_channels = out_channels
         self.kern_size = kern_size
         self.stride = stride
-        self.g = torch.nn.Parameter(self.create_weight(),requires_grad=True)
-
-    def create_weight(self):
-        x = (torch.rand([self.out_channels, self.in_channels, 8, 3]) - 0.5) * 0.1
-        return x
+        self.g = torch.nn.Parameter((torch.rand([self.out_channels, self.in_channels, 8, 3]) - 0.5) * 0.1,requires_grad=True)
 
     def inverse3(self, b_mat):
         eps = 0.0000001
@@ -73,8 +69,8 @@ class CayleyConv(nn.Module):
                 for k in range(second.shape[2]):
                     for l in range(second.shape[3]):
                         if k == 1 and l == 1:
-                            second[i][j][k][l] = torch.eye(3)
-                            first[i][j][k][l] = torch.eye(3)
+                            second[i][j][k][l] = torch.eye(3).cuda()
+                            first[i][j][k][l] = torch.eye(3).cuda()
                         else:
                             num = k * 3 + l
                             if num == 8:
@@ -103,7 +99,6 @@ class CayleyConv(nn.Module):
                             first[i][j][k][l][2][2] = 1
 
         inversed = self.inverse3(first.view([self.out_channels * self.in_channels * 3 * 3, 3, 3])).cuda()
-        #inversed = inverse_prep.view(self.out_channels, self.in_channels, 3, 3, 3, 3).cuda()
         g_matrix = torch.bmm(inversed, second.view([self.out_channels * self.in_channels * 3 * 3, 3, 3])).cuda()
         g_matrix = g_matrix.view([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
         for m in range(result.shape[0]):

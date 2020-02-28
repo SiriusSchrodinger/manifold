@@ -23,9 +23,9 @@ class ManifoldNetSPD(nn.Module):
 
         #self.spd_conv6 = spd.CayleyConv(8, 16, 3, 1)
         #self.spd_conv7 = spd.CayleyConv(16, 16, 3, 1)
-        self.spd_conv8 = spd.CayleyConv(16, 8, 3, 1)
-        self.spd_conv9 = spd.CayleyConv(8, 4, 3, 1)
-        self.spd_conv10 = spd.CayleyConv(4, 1, 3, 1)
+        #self.spd_conv8 = spd.CayleyConv(16, 8, 3, 1)
+        #self.spd_conv9 = spd.CayleyConv(8, 4, 3, 1)
+        #self.spd_conv10 = spd.CayleyConv(4, 1, 3, 1)
 
 
     def forward(self, x):
@@ -38,9 +38,9 @@ class ManifoldNetSPD(nn.Module):
 
         #x, wp6 = self.spd_conv6(x)
         #x, wp7 = self.spd_conv7(x)
-        x, wp8 = self.spd_conv8(x)
-        x, wp9 = self.spd_conv9(x)
-        x, wp10 = self.spd_conv10(x)
+        #x, wp8 = self.spd_conv8(x)
+        #x, wp9 = self.spd_conv9(x)
+        #x, wp10 = self.spd_conv10(x)
 
         return x
 
