@@ -88,7 +88,7 @@ class ParkinsonsDataset(data.Dataset):
             samples.append(torch.matmul(v, torch.matmul(s, v.t())))
 
         sample_processed = torch.stack(samples)
-        sample_processed = sample_processed.reshape(1,64,64,3,3)[:,16:48,16:48,...]
+        sample_processed = sample_processed.reshape(1,64,64,3,3)[0:5000,16:48,16:48,...]
 
         return sample_processed
 
