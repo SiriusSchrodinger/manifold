@@ -17,8 +17,9 @@ class ManifoldNetSPD(nn.Module):
         self.spd_conv1 = spd.SPDConv2D(1, 4, 3, 1)
         self.spd_conv2 = spd.SPDConv2D(4, 8, 3, 1)
         self.spd_conv3 = spd.SPDConv2D(8, 16, 3, 1)
-        self.spd_conv4 = spd.SPDConv2D(16, 16, 3, 1)
-        self.spd_conv5 = spd.SPDConv2D(16, 8, 3, 1)
+        #self.spd_conv4 = spd.SPDConv2D(16, 16, 3, 1)
+        self.spd_conv4 = spd.SPDConv2D(16, 1, 3, 1)
+        #self.spd_conv5 = spd.SPDConv2D(16, 8, 3, 1)
 
 
         #self.spd_conv6 = spd.CayleyConv(8, 16, 3, 1)
@@ -34,7 +35,7 @@ class ManifoldNetSPD(nn.Module):
         x,wp2 = self.spd_conv2(x)
         x,wp3 = self.spd_conv3(x)
         x,wp4 = self.spd_conv4(x)
-        x,wp5 = self.spd_conv5(x)
+        #x,wp5 = self.spd_conv5(x)
 
         #x, wp6 = self.spd_conv6(x)
         #x, wp7 = self.spd_conv7(x)
