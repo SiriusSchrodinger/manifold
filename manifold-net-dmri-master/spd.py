@@ -105,6 +105,7 @@ class CayleyConv(nn.Module):
         inversed = self.inverse3(first.view([self.out_channels * self.in_channels * 3 * 3, 3, 3])).cuda()
         #inversed = inverse_prep.view(self.out_channels, self.in_channels, 3, 3, 3, 3).cuda()
         g_matrix = torch.bmm(inversed, second.view([self.out_channels * self.in_channels * 3 * 3, 3, 3])).cuda()
+        g_matrix = g_matrix.view([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
         for m in range(result.shape[0]):
             for o in range(self.out_channels):
                 for i in range(self.in_channels):
