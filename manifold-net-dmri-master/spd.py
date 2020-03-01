@@ -144,7 +144,7 @@ class CayleyConv(nn.Module):
         # x_unsqueezed = [batch, in, row, col, 1, 3, 3]
         x_unsqueezed = torch.unsqueeze(x_unsqueezed, 5)
         # x_unsqueezed = [batch, in, row, col, 1, 1, 3, 3]
-        x_unsqueezed = x_unsqueezed.repeat(1, 1, 1, 1, 3, 3, 1)
+        x_unsqueezed = x_unsqueezed.repeat(1, 1, 1, 1, 3, 3, 1, 1)
         # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
         #multiply
         multiply_prep = x_unsqueezed.view(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3] * self.kern_size * self.kern_size, 3, 3).cuda()
