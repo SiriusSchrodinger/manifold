@@ -181,7 +181,6 @@ class CayleyConv(nn.Module):
         # folded = [batch, in, 3, 3, outrow, outcol]
         folded = folded.permute(0, 1, 4, 5, 2, 3).contiguous()
         # folded = [batch, in, outrow, outcol, 3, 3]
-        print(folded.shape)
         # from input channel to output channel
         c_matrix = self.g[24:].cuda()
         c_matrix = c_matrix**2
@@ -190,6 +189,7 @@ class CayleyConv(nn.Module):
         # c_matrix = [in, out]
         folded_in = folded.permute(0, 2, 3, 4, 5, 1).contiguous()
         # folded_in = [batch, outrow, outcol, 3, 3, in]
+        print(folded_in.shape)
         folded_in = folded_in.view(folded_in.shape[0] * folded_in.shape[1] * folded_in.shape[2] * folded_in.shape[3] * folded_in.shape[4], folded_in.shape[5])
         # folded_in = [batch * outrow * outcol * 3 * 3, in]
         folded_out = torch.mm(folded_in, c_matrix)
