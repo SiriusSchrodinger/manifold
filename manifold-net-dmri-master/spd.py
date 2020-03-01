@@ -189,12 +189,13 @@ class CayleyConv(nn.Module):
         # c_matrix = [in, out]
         folded_in = folded.permute(0, 2, 3, 4, 5, 1).contiguous()
         # folded_in = [batch, outrow, outcol, 3, 3, in]
-        print(folded_in.shape)
         folded_in = folded_in.view(folded_in.shape[0] * folded_in.shape[1] * folded_in.shape[2] * folded_in.shape[3] * folded_in.shape[4], folded_in.shape[5])
         # folded_in = [batch * outrow * outcol * 3 * 3, in]
         folded_out = torch.mm(folded_in, c_matrix)
         # folded_out = [batch * outrow * outcol * 3 * 3, out]
         out = folded_out.view(folded.shape[0], folded.shape[2], folded.shape[3], 3, 3, self.out_channels)
+        # folded_out = [batch, outrow, outcol, 3, 3, out]
+        out = out.permute(0, 5, 1, 2, 3, 4).contiguous()
         """for m in range(result.shape[0]):
             for o in range(self.out_channels):
                 for i in range(self.in_channels):
