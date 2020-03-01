@@ -167,10 +167,12 @@ class CayleyConv(nn.Module):
         # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
         x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2], x_unsqueezed.shape[3], 81)
         # x_unsqueezed = [batch, in, row, col, 81] (ker * ker * 3 * 3)
-        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 81)
-        # x_unsqueezed = [batch, in * row * col, 81] (ker * ker * 3 * 3)
-        x_unsqueezed = x_unsqueezed.permute(0, 2, 1).contiguous()
-        #unsqueezed x_unsqueezed = [batch, 81, in * row * col] (ker * ker * 3 * 3)
+        x_unsqueezed = x_unsqueezed.permute(0, 1, 4, 2, 3).contiguous()
+        # x_unsqueezed = [batch, in, 81, row, col] (ker * ker * 3 * 3)
+        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2], x_unsqueezed.shape[3] * x_unsqueezed.shape[4])
+        # x_unsqueezed = [batch, in, 81, row * col] (ker * ker * 3 * 3)
+        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1] * x_unsqueezed.shape[2], -1)
+        #unsqueezed x_unsqueezed = [batch, in * 81, row * col] (ker * ker * 3 * 3)
         # fold
         folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, 3)
         # end fold
