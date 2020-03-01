@@ -176,12 +176,12 @@ class CayleyConv(nn.Module):
         # fold
         folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, 3)
         # end fold
-        print(folded.shape)
         # folded = [batch, in * 3 * 3, outrow, outcol]
         folded = folded.view(folded.shape[0], self.in_channels, 3, 3, folded.shape[2], folded.shape[3])
         # folded = [batch, in, 3, 3, outrow, outcol]
         folded = folded.permute(0, 1, 4, 5, 2, 3).contiguous()
         # folded = [batch, in, outrow, outcol, 3, 3]
+        print(folded.shape)
         # from input channel to output channel
         c_matrix = self.g[24:].cuda()
         c_matrix = c_matrix**2
