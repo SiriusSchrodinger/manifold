@@ -12,7 +12,7 @@ def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
-training_params = {'batch_size': 10,
+training_params = {'batch_size': 30,
           'shuffle': True,
           'num_workers': 0}
 
@@ -58,6 +58,7 @@ with open("data_backup", "w") as f:
         for epoch in range(max_epochs):
             print('Starting Epoch ', epoch, '...')
             #for sample, label in training_generator:
+            epoch_start = time.time()
             for sample in training_generator:
                 i += 1
                 sample = sample.to(device)
@@ -74,18 +75,22 @@ with open("data_backup", "w") as f:
                 loss = my_loss(sample, out)
                 loss.backward()
                 end = time.time()
-                print("\n")
+                #print("\n")
 
                 optimizer_con.step()
-                print('Training Loss: ', loss.item())
+                #print('Training Loss: ', loss.item())
                 #print('Classification accuracy: ', classification(out, label))
-                print('Time: ', end-start)
+                #print('Time: ', end-start)
 
                 f.write('Training Loss: '+str(loss)+"\n")
                 #f.write('Classification accuracy: '+str(classification(out, label))+"\n")
                 f.flush()
 
                 writer.add_scalar("data/training_loss", loss, i)
+            epoch_end = time.time()
+            print("\n")
+            print('Last Training Loss: ', loss.item())
+            print('Time: ', epoch_end - epoch_start)
 
             if validate:
                 print('Testing on validation set...')
