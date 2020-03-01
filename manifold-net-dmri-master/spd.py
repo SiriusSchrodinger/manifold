@@ -146,7 +146,6 @@ class CayleyConv(nn.Module):
         # x_unsqueezed = [batch, in, row, col, 1, 1, 3, 3]
         x_unsqueezed = x_unsqueezed.repeat(1, 1, 1, 1, 3, 3, 1, 1)
         # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
-        print(x_unsqueezed.shape)
         #multiply
         multiply_prep = x_unsqueezed.view(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3] * self.kern_size * self.kern_size, 3, 3).cuda()
         # x_unsqueezed = [batch * in * row * col * 3 * 3, 3, 3]
@@ -177,6 +176,7 @@ class CayleyConv(nn.Module):
         # fold
         folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, 3)
         # end fold
+        print(folded.shape)
         # folded = [batch, in * 3 * 3, outrow, outcol]
         folded = folded.view(folded.shape[0], self.in_channels, 3, 3, folded.shape[2], folded.shape[3])
         # folded = [batch, in, 3, 3, outrow, outcol]
