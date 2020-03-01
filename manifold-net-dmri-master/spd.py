@@ -21,7 +21,7 @@ class CayleyConv(nn.Module):
         self.out_channels = out_channels
         self.kern_size = kern_size
         self.stride = stride
-        self.g = torch.nn.Parameter(create_parameter(), requires_grad=True)
+        self.g = torch.nn.Parameter(self.create_parameter(), requires_grad=True)
 
     def create_parameter(self):
         result = (torch.rand([8 * 3 + self.in_channels * self.out_channels]) - 0.5) * 0.1
