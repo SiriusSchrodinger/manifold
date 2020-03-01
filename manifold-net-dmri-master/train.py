@@ -64,7 +64,7 @@ with open("data_backup", "w") as f:
                 sample = sample.to(device)
                 #label = label.to(device)
                 
-                print("\n")
+                #print("\n")
                 start = time.time()
                 optimizer_con.zero_grad()
                 #import pdb; pdb.set_trace()
