@@ -66,13 +66,9 @@ class CayleyConv(nn.Module):
         #assume stride = 1
         #assume ker = 3
         kernel = self.g[:24].cuda()
-        first = torch.zeros([3, 3, 3, 3]).cuda()
-        # first = [ker, ker, 3, 3]
-        second = torch.zeros([3, 3, 3, 3]).cuda()
-        # second = [ker, ker, 3, 3]
-        first = first.view(9, 3, 3)
+        first = first.zeros(9, 3, 3).cuda()
         # first = [ker * ker, 3, 3]
-        second = second.view(9, 3, 3)
+        second = second.zeros(9, 3, 3).cuda()
         # second = [ker * ker, 3, 3]
         for i in range(9):
             if i == 4:
@@ -83,61 +79,15 @@ class CayleyConv(nn.Module):
                     num = 4
                 else:
                     num = i
-                #first_indiced = torch.Tensor([1, kernel[num * 3], kernel[num * 3 + 1], 1, kernel[num * 3 + 2], 1])
-                #triu_indices = torch.triu_indices(row=3, col=3, offset=0)
                 a = kernel[num * 3]
                 b = kernel[num * 3 + 1]
                 c = kernel[num * 3 + 2]
                 first[i]= torch.Tensor([[1, -a, -b], [a, 1, -c], [b, c, 1]]).cuda()
-                #second[i, triu_indices[0], triu_indices[1]] = indiced
                 second[i]= torch.Tensor([[1, a, b], [-a, 1, c], [-b, -c, 1]]).cuda()
         inversed = self.inverse3(first).cuda()
         g_matrix = torch.bmm(inversed, second).cuda()
         g_matrix_transposed = g_matrix.transpose(1, 2).cuda()
-        g_matrix = g_matrix.view(3, 3, 3, 3)
-        g_matrix_transposed = g_matrix_transposed.view(3, 3, 3, 3)
-        """result = torch.zeros([x.shape[0], self.out_channels, x.shape[2] - 1 + self.kern_size, x.shape[3] - 1 + self.kern_size, 3, 3]).cuda()
-        second = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
-        first = torch.zeros([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
-        for i in range(second.shape[0]):
-            for j in range(second.shape[1]):
-                for k in range(second.shape[2]):
-                    for l in range(second.shape[3]):
-                        if k == 1 and l == 1:
-                            second[i][j][k][l] = torch.eye(3).cuda()
-                            first[i][j][k][l] = torch.eye(3).cuda()
-                        else:
-                            num = k * 3 + l
-                            if num == 8:
-                                num = 4
-                            _a = self.g[i][j][num][0]
-                            _b = self.g[i][j][num][1]
-                            _c = self.g[i][j][num][2]
-                            second[i][j][k][l][0][0] = 1
-                            second[i][j][k][l][0][1] = _a
-                            second[i][j][k][l][0][2] = _b
-                            second[i][j][k][l][1][0] = -_a
-                            second[i][j][k][l][1][1] = 1
-                            second[i][j][k][l][1][2] = _c
-                            second[i][j][k][l][2][0] = -_b
-                            second[i][j][k][l][2][1] = -_c
-                            second[i][j][k][l][2][2] = 1
-
-                            first[i][j][k][l][0][0] = 1
-                            first[i][j][k][l][0][1] = -_a
-                            first[i][j][k][l][0][2] = -_b
-                            first[i][j][k][l][1][0] = _a
-                            first[i][j][k][l][1][1] = 1
-                            first[i][j][k][l][1][2] = -_c
-                            first[i][j][k][l][2][0] = _b
-                            first[i][j][k][l][2][1] = _c
-                            first[i][j][k][l][2][2] = 1
-
-        inversed = self.inverse3(first.view([self.out_channels * self.in_channels * 3 * 3, 3, 3])).cuda()  
-        g_matrix = torch.bmm(inversed, second.view([self.out_channels * self.in_channels * 3 * 3, 3, 3])).cuda()
-        g_matrix = g_matrix.view([self.out_channels, self.in_channels, 3, 3, 3, 3]).cuda()
-        g_matrix_transposed = g_matrix.transpose(4,5).cuda()"""
-        #fix above g init
+        # fix above g init
         # unsqueeze x x = [batch, in, row, col, 3, 3]
         # x = [batch, in, row, col, 3, 3]
         x_unsqueezed = torch.unsqueeze(x, 4)
@@ -149,27 +99,18 @@ class CayleyConv(nn.Module):
         #multiply
         multiply_prep = x_unsqueezed.view(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3] * self.kern_size * self.kern_size, 3, 3).cuda()
         # x_unsqueezed = [batch * in * row * col * 3 * 3, 3, 3]
-        # g_matrix = [3, 3, 3, 3] (ker, ker, 3, 3)
-        # g_matrix_transposed = [3, 3, 3, 3]
-        g_matrix = g_matrix.view(9, 3, 3)
-        g_repeat = torch.unsqueeze(g_matrix, 0)
-        g_repeat = g_repeat.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1, 1)
-        g_repeat = g_repeat.view(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3] * 9, 3, 3)
-        g_matrix_transposed = g_matrix_transposed.view(9, 3, 3)
-        g_transpose_repeat = torch.unsqueeze(g_matrix_transposed, 0)
-        g_transpose_repeat = g_transpose_repeat.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1, 1)
-        g_transpose_repeat = g_transpose_repeat.view(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3] * 9, 3, 3)
-
+        # g_matrix = [3 * 3, 3, 3] (ker, ker, 3, 3)
+        # g_matrix_transposed = [3 * 3, 3, 3]
+        g_repeat = g_matrix.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1)
+        g_transpose_repeat = g_matrix_transposed.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1)
         multiply_temp = torch.bmm(g_repeat, multiply_prep).cuda()
         multiply = torch.bmm(multiply_temp, g_transpose_repeat).cuda()
         #end multiply
         x_unsqueezed = multiply.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2], x_unsqueezed.shape[3], self.kern_size, self.kern_size, 3, 3)
         # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
-        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2], x_unsqueezed.shape[3], 81)
-        # x_unsqueezed = [batch, in, row, col, 81] (ker * ker * 3 * 3)
-        x_unsqueezed = x_unsqueezed.permute(0, 1, 4, 2, 3).contiguous()
-        # x_unsqueezed = [batch, in, 81, row, col] (ker * ker * 3 * 3)
-        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2], x_unsqueezed.shape[3] * x_unsqueezed.shape[4])
+        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 81)
+        # x_unsqueezed = [batch, in, row * col, 81] (ker * ker * 3 * 3)
+        x_unsqueezed = x_unsqueezed.permute(0, 1, 3, 3).contiguous()
         # x_unsqueezed = [batch, in, 81, row * col] (ker * ker * 3 * 3)
         x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1] * x_unsqueezed.shape[2], -1)
         #unsqueezed x_unsqueezed = [batch, in * 81, row * col] (ker * ker * 3 * 3)
@@ -196,17 +137,6 @@ class CayleyConv(nn.Module):
         out = folded_out.view(folded.shape[0], folded.shape[2], folded.shape[3], 3, 3, self.out_channels)
         # folded_out = [batch, outrow, outcol, 3, 3, out]
         out = out.permute(0, 5, 1, 2, 3, 4).contiguous()
-        """for m in range(result.shape[0]):
-            for o in range(self.out_channels):
-                for i in range(self.in_channels):
-                    for r in range(x.shape[2]):
-                        for c in range(x.shape[3]):
-                            #center = [r + 1][c + 1]
-                            for a in range(3):
-                                for b in range(3):
-                                    g_selected = g_matrix[o][i][a][b]
-                                    result[m][o][r + a][c + b] += torch.mm(torch.mm(g_selected, x[m][i][r][c]), g_selected.t())
-                            result[m][o][r + 1][c + 1] = x[m][i][r][c]"""
         return out, 0
 
 
