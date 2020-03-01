@@ -66,9 +66,9 @@ class CayleyConv(nn.Module):
         #assume stride = 1
         #assume ker = 3
         kernel = self.g[:24].cuda()
-        first = first.zeros(9, 3, 3).cuda()
+        first = torch.zeros(9, 3, 3).cuda()
         # first = [ker * ker, 3, 3]
-        second = second.zeros(9, 3, 3).cuda()
+        second = torch.zeros(9, 3, 3).cuda()
         # second = [ker * ker, 3, 3]
         for i in range(9):
             if i == 4:
