@@ -24,7 +24,7 @@ class CayleyConv(nn.Module):
         self.g = torch.nn.Parameter(self.create_parameter(), requires_grad=True)
 
     def create_parameter(self):
-        result = (torch.rand([8 * 3 + self.in_channels * self.out_channels]) - 0.5) * 0.1
+        result = (torch.rand([8 * 2 + self.in_channels * self.out_channels]) - 0.5) * 0.1
         return result
 
     def inverse3(self, b_mat):
@@ -62,10 +62,10 @@ class CayleyConv(nn.Module):
 
     def forward(self, x):
         # x = [batch, in, row, col, 3, 3]
-        # g = [3 * 8 + in * out]
+        # g = [2 * 8 + in * out]
         #assume stride = 1
         #assume ker = 3
-        kernel = self.g[:24].cuda()
+        kernel = self.g[:16].cuda()
         first = torch.zeros(9, 3, 3).cuda()
         # first = [ker * ker, 3, 3]
         second = torch.zeros(9, 3, 3).cuda()
@@ -79,9 +79,9 @@ class CayleyConv(nn.Module):
                     num = 4
                 else:
                     num = i
-                a = kernel[num * 3]
-                b = kernel[num * 3 + 1]
-                c = kernel[num * 3 + 2]
+                a = kernel[num * 2]
+                b = kernel[num * 2]
+                c = kernel[num * 2 + 1]
                 first[i]= torch.Tensor([[1, -a, -b], [a, 1, -c], [b, c, 1]]).cuda()
                 second[i]= torch.Tensor([[1, a, b], [-a, 1, c], [-b, -c, 1]]).cuda()
         inversed = self.inverse3(first).cuda()
@@ -91,6 +91,7 @@ class CayleyConv(nn.Module):
         # unsqueeze x x = [batch, in, row, col, 3, 3]
         # x = [batch, in, row, col, 3, 3]
         x_unsqueezed = torch.unsqueeze(x, 4)
+        print(x_unsqueezed.get_device())
         # x_unsqueezed = [batch, in, row, col, 1, 3, 3]
         x_unsqueezed = torch.unsqueeze(x_unsqueezed, 5)
         # x_unsqueezed = [batch, in, row, col, 1, 1, 3, 3]
@@ -123,7 +124,7 @@ class CayleyConv(nn.Module):
         folded = folded.permute(0, 1, 4, 5, 2, 3).contiguous()
         # folded = [batch, in, outrow, outcol, 3, 3]
         # from input channel to output channel
-        c_matrix = self.g[24:].cuda()
+        c_matrix = self.g[16:].cuda()
         c_matrix = c_matrix**2
         # c_matrix = [in * out]
         c_matrix = c_matrix.view(self.in_channels, self.out_channels)
