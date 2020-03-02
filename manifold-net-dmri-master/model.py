@@ -48,17 +48,35 @@ class ManifoldNetSPD(nn.Module):
 
     def forward(self, x):
         #import pdb; pdb.set_trace()
+        first_start = time.time()
         x,wp1 = self.spd_conv1(x)
+        first_end = time.time()
+        print("first:", first_end - first_start)
+        second_start = time.time()
         x,wp2 = self.spd_conv2(x)
+        second_end = time.time()
+        print("second:", second_end - second_start)
+        third_start = time.time()
         x,wp3 = self.spd_conv3(x)
+        third_end = time.time()
+        print("third:", third_end - third_start)
         #x,wp4 = self.spd_conv4(x)
         #x,wp5 = self.spd_conv5(x)
 
         #x, wp6 = self.spd_conv6(x)
         #x, wp7 = self.spd_conv7(x)
+        forth_start = time.time()
         x, wp8 = self.spd_conv8(x)
+        forth_end = time.time()
+        print("forth:", forth_end - forth_start)
+        fifth_start = time.time()
         x, wp9 = self.spd_conv9(x)
+        fifth_end = time.time()
+        print("fifth:", fifth_end - fifth_start)
+        six_start = time.time()
         x, wp10 = self.spd_conv10(x)
+        six_end = time.time()
+        print("sixth:", six_end - six_start)
 
         return x
 
