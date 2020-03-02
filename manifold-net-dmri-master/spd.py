@@ -137,7 +137,6 @@ class CayleyConv(nn.Module):
         out = folded_out.view(folded.shape[0], folded.shape[2], folded.shape[3], 3, 3, self.out_channels)
         # folded_out = [batch, outrow, outcol, 3, 3, out]
         out = out.permute(0, 5, 1, 2, 3, 4).contiguous()
-        print(out.get_device())
         return out, 0
 
 
