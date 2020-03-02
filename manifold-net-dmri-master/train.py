@@ -92,7 +92,7 @@ with open("data_backup", "w") as f:
 
                 writer.add_scalar("data/training_loss", loss, i)
                 batch_end = time.time()
-                print("batch time:", batch_end - batch_start)
+                print(i, "batch time:", batch_end - batch_start)
             epoch_end = time.time()
             print("\n")
             print('Last Training Loss: ', loss.item())
