@@ -60,7 +60,7 @@ class ManifoldNetSPD(nn.Module):
         x, wp10 = self.spd_conv10(x)
         #six_end = time.time()
         #print("sixth:", six_end - six_start)
-        foward_end = time.time()
+        forward_end = time.time()
         print("forward time:", forward_end - forward_start)
 
         return x
