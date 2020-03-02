@@ -116,7 +116,6 @@ class CayleyConv(nn.Module):
         #unsqueezed x_unsqueezed = [batch, in * 81, row * col] (ker * ker * 3 * 3)
         # fold
         folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, 3)
-        print(folded.get_device())
         # end fold
         # folded = [batch, in * 3 * 3, outrow, outcol]
         folded = folded.view(folded.shape[0], self.in_channels, 3, 3, folded.shape[2], folded.shape[3])
@@ -128,6 +127,7 @@ class CayleyConv(nn.Module):
         c_matrix = c_matrix**2
         # c_matrix = [in * out]
         c_matrix = c_matrix.view(self.in_channels, self.out_channels)
+        print(c_matrix.get_device())
         # c_matrix = [in, out]
         folded_in = folded.permute(0, 2, 3, 4, 5, 1).contiguous()
         # folded_in = [batch, outrow, outcol, 3, 3, in]
