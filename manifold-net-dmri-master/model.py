@@ -29,26 +29,26 @@ class ManifoldNetSPD(nn.Module):
 
 
     def forward(self, x):
-        print("0:", x[0][0][0][0])
+        #print("0:", x[0][0][0][0])
         x,wp1 = self.spd_conv1(x)
-        print("1:", x[0][0][0][0])
+        #print("1:", x[0][0][0][0])
         x,wp2 = self.spd_conv2(x)
-        print("2:", x[0][0][0][0])
+        #print("2:", x[0][0][0][0])
         x,wp3 = self.spd_conv3(x)
-        print("3:", x[0][0][0][0])
+        #print("3:", x[0][0][0][0])
         x,wp4 = self.spd_conv4(x)
-        print("4:", x[0][0][0][0])
+        #print("4:", x[0][0][0][0])
         #x,wp5 = self.spd_conv5(x)
 
         #x, wp6 = self.spd_conv6(x)
         x, wp7 = self.spd_conv7(x)
-        print("5:", x[0][0][0][0])
+        #print("5:", x[0][0][0][0])
         x, wp8 = self.spd_conv8(x)
-        print("6:", x[0][0][0][0])
+        #print("6:", x[0][0][0][0])
         x, wp9 = self.spd_conv9(x)
-        print("7:", x[0][0][0][0])
+        #print("7:", x[0][0][0][0])
         x, wp10 = self.spd_conv10(x)
-        print("8:", x[0][0][0][0])
+        #print("8:", x[0][0][0][0])
 
         return x
 
