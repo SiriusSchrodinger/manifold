@@ -29,10 +29,11 @@ manifold_net_con = ManifoldNetSPD().to(device)
 print('Parameters:')
 print(count_parameters(manifold_net_con))
 dataset = ParkinsonsDataset('../data.npz')
-training, validation = data.random_split(dataset, [dataset.__len__()-71,71])
+#training, validation = data.random_split(dataset, [dataset.__len__()-71,71])
+training = dataset
 
 training_generator = data.DataLoader(training, **training_params)
-validation_generator = data.DataLoader(validation, **validation_params)
+#validation_generator = data.DataLoader(validation, **validation_params)
 
 optimizer_con = optim.Adam(manifold_net_con.parameters(), lr=0.0005)
 criterion = nn.CrossEntropyLoss().cuda()
