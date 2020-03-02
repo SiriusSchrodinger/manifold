@@ -137,7 +137,9 @@ class CayleyConv(nn.Module):
         out = folded_out.view(folded.shape[0], folded.shape[2], folded.shape[3], 3, 3, self.out_channels)
         # folded_out = [batch, outrow, outcol, 3, 3, out]
         out = out.permute(0, 5, 1, 2, 3, 4).contiguous()
-        return out, 0
+        out_trans = out.transpose(4, 5)
+        result = (1/2) * (out + out_trans)
+        return result, 0
 
 
 class SPDConv2D(nn.Module):
