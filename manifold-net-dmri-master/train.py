@@ -73,7 +73,10 @@ with open("data_backup", "w") as f:
                 #print(label)
                 #loss = criterion(out,label)
                 loss = my_loss(sample, out)
+                backward_start = time.time()
                 loss.backward()
+                backward_end = time.time()
+                print("forward time:", backward_end - backward_start)
                 end = time.time()
                 #print("\n")
 
