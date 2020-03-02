@@ -60,6 +60,7 @@ with open("data_backup", "w") as f:
             #for sample, label in training_generator:
             epoch_start = time.time()
             for sample in training_generator:
+                batch_start = time.time()
                 i += 1
                 sample = sample.to(device)
                 #label = label.to(device)
@@ -73,10 +74,10 @@ with open("data_backup", "w") as f:
                 #print(label)
                 #loss = criterion(out,label)
                 loss = my_loss(sample, out)
-                backward_start = time.time()
+                #backward_start = time.time()
                 loss.backward()
-                backward_end = time.time()
-                print("forward time:", backward_end - backward_start)
+                #backward_end = time.time()
+                #print("backward time:", backward_end - backward_start)
                 end = time.time()
                 #print("\n")
 
@@ -90,6 +91,8 @@ with open("data_backup", "w") as f:
                 f.flush()
 
                 writer.add_scalar("data/training_loss", loss, i)
+                batch_end = time.time()
+                print("batch time:", batch_end - batch_start)
             epoch_end = time.time()
             print("\n")
             print('Last Training Loss: ', loss.item())
