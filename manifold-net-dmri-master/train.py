@@ -60,43 +60,34 @@ with open("data_backup", "w") as f:
             print('Starting Epoch ', epoch, '...')
             #for sample, label in training_generator:
             epoch_start = time.time()
+            total_loss = 0
             for sample in training_generator:
-                batch_start = time.time()
                 i += 1
                 sample = sample.to(device)
                 #label = label.to(device)
                 
                 #print("\n")
-                start = time.time()
                 optimizer_con.zero_grad()
-                #import pdb; pdb.set_trace()
                 out = manifold_net_con(sample)
-                #print(out)
-                #print(label)
                 #loss = criterion(out,label)
                 loss = my_loss(sample, out)
                 #backward_start = time.time()
                 loss.backward()
-                #backward_end = time.time()
-                #print("backward time:", backward_end - backward_start)
-                end = time.time()
-                #print("\n")
 
                 optimizer_con.step()
                 #print('Training Loss: ', loss.item())
                 #print('Classification accuracy: ', classification(out, label))
                 #print('Time: ', end-start)
+                total_loss += loss.item()
 
                 f.write('Training Loss: '+str(loss)+"\n")
                 #f.write('Classification accuracy: '+str(classification(out, label))+"\n")
                 f.flush()
 
                 writer.add_scalar("data/training_loss", loss, i)
-                batch_end = time.time()
-                print(i, "batch time:", batch_end - batch_start)
             epoch_end = time.time()
             print("\n")
-            print('Last Training Loss: ', loss.item())
+            print('Average Training Loss: ', total_loss / 1800)
             print('Time: ', epoch_end - epoch_start)
 
             if validate:
