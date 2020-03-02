@@ -32,7 +32,7 @@ class ManifoldNetSPD(nn.Module):
         x,wp1 = self.spd_conv1(x)
         x,wp2 = self.spd_conv2(x)
         x,wp3 = self.spd_conv3(x)
-        #x,wp4 = self.spd_conv4(x)
+        x,wp4 = self.spd_conv4(x)
         #x,wp5 = self.spd_conv5(x)
 
         #x, wp6 = self.spd_conv6(x)
