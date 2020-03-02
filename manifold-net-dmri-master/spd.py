@@ -91,7 +91,6 @@ class CayleyConv(nn.Module):
         # unsqueeze x x = [batch, in, row, col, 3, 3]
         # x = [batch, in, row, col, 3, 3]
         x_unsqueezed = torch.unsqueeze(x, 4)
-        print(x_unsqueezed.get_device())
         # x_unsqueezed = [batch, in, row, col, 1, 3, 3]
         x_unsqueezed = torch.unsqueeze(x_unsqueezed, 5)
         # x_unsqueezed = [batch, in, row, col, 1, 1, 3, 3]
@@ -99,18 +98,13 @@ class CayleyConv(nn.Module):
         # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
         #multiply
         multiply_prep = x_unsqueezed.view(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3] * self.kern_size * self.kern_size, 3, 3).cuda()
-        print(multiply_prep.get_device())
         # x_unsqueezed = [batch * in * row * col * 3 * 3, 3, 3]
         # g_matrix = [3 * 3, 3, 3] (ker, ker, 3, 3)
         # g_matrix_transposed = [3 * 3, 3, 3]
         g_repeat = g_matrix.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1)
-        print(g_repeat.get_device())
         g_transpose_repeat = g_matrix_transposed.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1)
-        print(g_matrix.get_device())
         multiply_temp = torch.bmm(g_repeat, multiply_prep).cuda()
-        print(multiply_temp.get_device())
         multiply = torch.bmm(multiply_temp, g_transpose_repeat).cuda()
-        print(multiply.get_device())
         #end multiply
         x_unsqueezed = multiply.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2], x_unsqueezed.shape[3], self.kern_size, self.kern_size, 3, 3)
         # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
@@ -122,6 +116,7 @@ class CayleyConv(nn.Module):
         #unsqueezed x_unsqueezed = [batch, in * 81, row * col] (ker * ker * 3 * 3)
         # fold
         folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, 3)
+        print(folded.get_device())
         # end fold
         # folded = [batch, in * 3 * 3, outrow, outcol]
         folded = folded.view(folded.shape[0], self.in_channels, 3, 3, folded.shape[2], folded.shape[3])
