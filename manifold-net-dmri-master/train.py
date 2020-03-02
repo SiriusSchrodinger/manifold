@@ -35,7 +35,7 @@ training = dataset
 training_generator = data.DataLoader(training, **training_params)
 #validation_generator = data.DataLoader(validation, **validation_params)
 
-optimizer_con = optim.Adam(manifold_net_con.parameters(), lr=0.0005)
+optimizer_con = optim.Adam(manifold_net_con.parameters(), lr=0.01)
 criterion = nn.CrossEntropyLoss().cuda()
 
 def classification(out,desired):
