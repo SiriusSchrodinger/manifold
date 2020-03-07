@@ -87,6 +87,7 @@ with open("data_backup", "w") as f:
                 """if epoch >= 1:
                     print(sample[0][0][0][0])
                     print(out[0][0][0][0])"""
+                import numpy
                 numpy.save("reconstruction", out)
 
                 writer.add_scalar("data/training_loss", loss, i)
