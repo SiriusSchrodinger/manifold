@@ -79,7 +79,6 @@ class ParkinsonsDataset(data.Dataset):
   def __init__(self, data_tensorf):
         'Initialization'
         self.all_data = np.load(data_tensorf)['arr_0'][0:1800, ...]
-        print(self.all_data.shape)
         self.all_data = torch.from_numpy(self.all_data)
 
   def __len__(self):
@@ -97,7 +96,8 @@ class ParkinsonsDataset(data.Dataset):
             samples.append(torch.matmul(v, torch.matmul(s, v.t())))
 
         sample_processed = torch.stack(samples)
-        sample_processed = sample_processed.reshape(1,64,64,3,3)[:,16:48,16:48,...]
+        #sample_processed = sample_processed.reshape(1,64,64,3,3)[:,16:48,16:48,...]
+        sample_processed = sample_processed.reshape(1,32,32,3,3)
 
         return sample_processed
 
