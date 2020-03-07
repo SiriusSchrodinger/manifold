@@ -28,7 +28,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 manifold_net_con = ManifoldNetSPD().to(device)
 print('Parameters:')
 print(count_parameters(manifold_net_con))
-dataset = ParkinsonsDataset('../data.npz')
+dataset = ParkinsonsDataset('./synth_dti.npz')
 #training, validation = data.random_split(dataset, [dataset.__len__()-71,71])
 training = dataset
 
