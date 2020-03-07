@@ -80,6 +80,7 @@ class ParkinsonsDataset(data.Dataset):
         'Initialization'
         self.all_data = np.load(data_tensorf)['arr_0'][0:1800, ...]
         self.all_data = torch.from_numpy(self.all_data)
+        self.length = self.all_data.shape[0]
 
   def __len__(self):
         'Denotes the total number of samples'
