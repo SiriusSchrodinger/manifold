@@ -75,7 +75,7 @@ class CayleyConv(nn.Module):
                 first[i] = torch.eye(3).cuda()
                 second[i] = torch.eye(3).cuda()
             else:
-                if i == full_kernel:
+                if i == full_kernel - 1:
                     num = self.kern_size // 2
                 else:
                     num = i
