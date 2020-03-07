@@ -99,7 +99,7 @@ class ParkinsonsDataset(data.Dataset):
         sample_processed = torch.stack(samples)
         #sample_processed = sample_processed.reshape(1,64,64,3,3)[:,16:48,16:48,...]
         sample_processed = sample_processed.reshape(1,32,32,3,3)
-        print(sample_processed)
+        #print(sample_processed)
 
         return sample_processed
 
