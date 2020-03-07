@@ -90,7 +90,7 @@ with open("data_backup", "w") as f:
                 writer.add_scalar("data/training_loss", loss, i)
             epoch_end = time.time()
             print("\n")
-            print('Average Training Loss: ', total_loss / 1800)
+            print('Average Training Loss: ', total_loss / training.shape[0])
             print('Time: ', epoch_end - epoch_start)
 
             if validate:
