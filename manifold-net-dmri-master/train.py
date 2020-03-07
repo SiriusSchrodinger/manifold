@@ -57,6 +57,7 @@ print('Starting training...')
 with open("data_backup", "w") as f:
     try:
         for epoch in range(max_epochs):
+            print("\n")
             print('Starting Epoch ', epoch, '...')
             #for sample, label in training_generator:
             epoch_start = time.time()
@@ -83,13 +84,12 @@ with open("data_backup", "w") as f:
                 f.write('Training Loss: '+str(loss)+"\n")
                 #f.write('Classification accuracy: '+str(classification(out, label))+"\n")
                 f.flush()
-                """if epoch >= 1:
+                if epoch >= 1:
                     print(sample[0][0][0][0])
-                    print(out[0][0][0][0])"""
+                    print(out[0][0][0][0])
 
                 writer.add_scalar("data/training_loss", loss, i)
             epoch_end = time.time()
-            print("\n")
             print('Average Training Loss: ', total_loss / training.length)
             print('Time: ', epoch_end - epoch_start)
 
