@@ -115,7 +115,7 @@ class CayleyConv(nn.Module):
         x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1] * x_unsqueezed.shape[2], -1)
         #unsqueezed x_unsqueezed = [batch, in * (ker * ker * 3 * 3), row * col] 
         # fold
-        folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, self.kern_size)
+        folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + self.kern_size - 1, self.kern_size)
         # end fold
         # folded = [batch, in * 3 * 3, outrow, outcol]
         folded = folded.view(folded.shape[0], self.in_channels, 3, 3, folded.shape[2], folded.shape[3])
