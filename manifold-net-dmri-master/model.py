@@ -17,12 +17,12 @@ class ManifoldNetSPD(nn.Module):
         self.spd_conv1 = spd.SPDConv2D(1, 4, 5, 1)
         self.spd_conv2 = spd.SPDConv2D(4, 8, 5, 1)
         self.spd_conv3 = spd.SPDConv2D(8, 16, 5, 1)
-        self.spd_conv4 = spd.SPDConv2D(16, 32, 5, 1)
+        #self.spd_conv4 = spd.SPDConv2D(16, 32, 5, 1)
         #self.spd_conv5 = spd.SPDConv2D(16, 8, 3, 1)
 
 
         #self.spd_conv6 = spd.CayleyConv(8, 16, 3, 1)
-        self.spd_conv7 = spd.CayleyConv(32, 16, 5, 1)
+        #self.spd_conv7 = spd.CayleyConv(32, 16, 5, 1)
         self.spd_conv8 = spd.CayleyConv(16, 8, 5, 1)
         self.spd_conv9 = spd.CayleyConv(8, 4, 5, 1)
         self.spd_conv10 = spd.CayleyConv(4, 1, 5, 1)
@@ -79,6 +79,7 @@ class ParkinsonsDataset(data.Dataset):
   def __init__(self, data_tensorf):
         'Initialization'
         self.all_data = np.load(data_tensorf)['arr_0'][0:1800, ...]
+        print(self.all_data.shape)
         self.all_data = torch.from_numpy(self.all_data)
 
   def __len__(self):
