@@ -78,7 +78,7 @@ def add_identity(x):
 class ParkinsonsDataset(data.Dataset):
   def __init__(self, data_tensorf):
         'Initialization'
-        self.all_data = np.load(data_tensorf)['arr_0'][0:1800, ...]
+        self.all_data = np.load(data_tensorf)['arr_0']
         self.all_data = torch.from_numpy(self.all_data)
         self.length = self.all_data.shape[0]
 
@@ -99,6 +99,7 @@ class ParkinsonsDataset(data.Dataset):
         sample_processed = torch.stack(samples)
         #sample_processed = sample_processed.reshape(1,64,64,3,3)[:,16:48,16:48,...]
         sample_processed = sample_processed.reshape(1,32,32,3,3)
+        print(sample_processed)
 
         return sample_processed
 
