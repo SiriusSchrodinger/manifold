@@ -24,7 +24,7 @@ class CayleyConv(nn.Module):
         self.g = torch.nn.Parameter(self.create_parameter(), requires_grad=True)
 
     def create_parameter(self):
-        result = (torch.rand([8 * 2 + self.in_channels * self.out_channels]) - 0.5) * 0.8
+        result = (torch.rand([(self.kern_size**2 - 1) * 2 + self.in_channels * self.out_channels]) - 0.5) * 0.8
         return result
 
     def inverse3(self, b_mat):
@@ -64,13 +64,13 @@ class CayleyConv(nn.Module):
         # x = [batch, in, row, col, 3, 3]
         # g = [2 * 8 + in * out]
         #assume stride = 1
-        #assume ker = 3
-        kernel = self.g[:16].cuda()
-        first = torch.zeros(9, 3, 3).cuda()
+        full_kernel = self.kern_size**2
+        kernel = self.g[:(full_kernel - 1) * 2].cuda()
+        first = torch.zeros(full_kernel, 3, 3).cuda()
         # first = [ker * ker, 3, 3]
-        second = torch.zeros(9, 3, 3).cuda()
+        second = torch.zeros(full_kernel, 3, 3).cuda()
         # second = [ker * ker, 3, 3]
-        for i in range(9):
+        for i in range(full_kernel):
             if i == 4:
                 first[i] = torch.eye(3).cuda()
                 second[i] = torch.eye(3).cuda()
@@ -94,28 +94,28 @@ class CayleyConv(nn.Module):
         # x_unsqueezed = [batch, in, row, col, 1, 3, 3]
         x_unsqueezed = torch.unsqueeze(x_unsqueezed, 5)
         # x_unsqueezed = [batch, in, row, col, 1, 1, 3, 3]
-        x_unsqueezed = x_unsqueezed.repeat(1, 1, 1, 1, 3, 3, 1, 1)
-        # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
+        x_unsqueezed = x_unsqueezed.repeat(1, 1, 1, 1, self.kern_size, self.kern_size, 1, 1)
+        # x_unsqueezed = [batch, in, row, col, ker, ker, 3, 3]
         #multiply
         multiply_prep = x_unsqueezed.view(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3] * self.kern_size * self.kern_size, 3, 3).cuda()
-        # x_unsqueezed = [batch * in * row * col * 3 * 3, 3, 3]
-        # g_matrix = [3 * 3, 3, 3] (ker, ker, 3, 3)
-        # g_matrix_transposed = [3 * 3, 3, 3]
+        # x_unsqueezed = [batch * in * row * col * ker * ker, 3, 3]
+        # g_matrix = [ker * ker, 3, 3]
+        # g_matrix_transposed = [ker * ker, 3, 3]
         g_repeat = g_matrix.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1)
         g_transpose_repeat = g_matrix_transposed.repeat(x_unsqueezed.shape[0] * x_unsqueezed.shape[1] * x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 1, 1)
         multiply_temp = torch.bmm(g_repeat, multiply_prep).cuda()
         multiply = torch.bmm(multiply_temp, g_transpose_repeat).cuda()
         #end multiply
         x_unsqueezed = multiply.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2], x_unsqueezed.shape[3], self.kern_size, self.kern_size, 3, 3)
-        # x_unsqueezed = [batch, in, row, col, 3, 3, 3, 3] (ker, ker, 3, 3)
-        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2] * x_unsqueezed.shape[3], 81)
-        # x_unsqueezed = [batch, in, row * col, 81] (ker * ker * 3 * 3)
+        # x_unsqueezed = [batch, in, row, col, ker, ker, 3, 3]
+        x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1], x_unsqueezed.shape[2] * x_unsqueezed.shape[3], (self.kern_size**2) * 9)
+        # x_unsqueezed = [batch, in, row * col, (ker * ker * 3 * 3)]
         x_unsqueezed = x_unsqueezed.permute(0, 1, 3, 2).contiguous()
-        # x_unsqueezed = [batch, in, 81, row * col] (ker * ker * 3 * 3)
+        # x_unsqueezed = [batch, in, (ker * ker * 3 * 3), row * col] 
         x_unsqueezed = x_unsqueezed.view(x_unsqueezed.shape[0], x_unsqueezed.shape[1] * x_unsqueezed.shape[2], -1)
-        #unsqueezed x_unsqueezed = [batch, in * 81, row * col] (ker * ker * 3 * 3)
+        #unsqueezed x_unsqueezed = [batch, in * (ker * ker * 3 * 3), row * col] 
         # fold
-        folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, 3)
+        folded = torch.nn.functional.fold(x_unsqueezed, x.shape[2] + 2, self.kern_size)
         # end fold
         # folded = [batch, in * 3 * 3, outrow, outcol]
         folded = folded.view(folded.shape[0], self.in_channels, 3, 3, folded.shape[2], folded.shape[3])
@@ -123,7 +123,7 @@ class CayleyConv(nn.Module):
         folded = folded.permute(0, 1, 4, 5, 2, 3).contiguous()
         # folded = [batch, in, outrow, outcol, 3, 3]
         # from input channel to output channel
-        c_matrix = self.g[16:].cuda()
+        c_matrix = self.g[(full_kernel - 1) * 2:].cuda()
         c_matrix = c_matrix**2
         # c_matrix = [in * out]
         c_matrix = c_matrix.view(self.in_channels, self.out_channels)
