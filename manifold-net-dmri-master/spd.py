@@ -24,7 +24,7 @@ class CayleyConv(nn.Module):
         self.g = torch.nn.Parameter(self.create_parameter(), requires_grad=True)
 
     def create_parameter(self):
-        result = (torch.rand([(self.kern_size**2 - 1) * 2 + self.in_channels * self.out_channels]) - 0.5) * 0.8
+        result = (torch.rand([(self.kern_size**2 - 1) * 2 + self.in_channels * self.out_channels]) - 0.5)
         return result
 
     def inverse3(self, b_mat):
